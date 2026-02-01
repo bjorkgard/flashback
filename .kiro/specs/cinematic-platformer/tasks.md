@@ -14,21 +14,21 @@ This implementation plan breaks down the cinematic platformer into incremental c
   - Set up test framework configuration for Vitest
   - _Requirements: 14.1, 14.2, 14.3_
 
-- [ ] 2. Implement math utilities
-  - [ ] 2.1 Create Vec2 type and operations (src/game/math/vec2.ts)
+- [x] 2. Implement math utilities
+  - [x] 2.1 Create Vec2 type and operations (src/game/math/vec2.ts)
     - Implement vec2(), add(), sub(), mul(), length(), normalize(), lerp()
     - _Requirements: 12.4, 12.5_
   
-  - [ ] 2.2 Write unit tests for Vec2 operations
+  - [x] 2.2 Write unit tests for Vec2 operations
     - Test basic operations with known values
     - Test edge cases (zero vectors, normalization of zero)
     - _Requirements: 12.4, 12.5_
   
-  - [ ] 2.3 Create Rect type and operations (src/game/math/rect.ts)
+  - [x] 2.3 Create Rect type and operations (src/game/math/rect.ts)
     - Implement rect(), intersects(), contains()
     - _Requirements: 10.3, 12.4_
   
-  - [ ] 2.4 Write unit tests for Rect operations
+  - [x] 2.4 Write unit tests for Rect operations
     - Test intersection detection with various overlaps
     - Test containment checks
     - _Requirements: 10.3, 12.4_
