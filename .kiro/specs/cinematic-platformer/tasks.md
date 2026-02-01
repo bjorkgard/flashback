@@ -33,17 +33,17 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test containment checks
     - _Requirements: 10.3, 12.4_
 
-- [ ] 3. Implement RNG and palette generation
-  - [ ] 3.1 Create seeded RNG (src/game/render/palette.ts)
+- [x] 3. Implement RNG and palette generation
+  - [x] 3.1 Create seeded RNG (src/game/render/palette.ts)
     - Implement mulberry32(seed: number)
     - Implement hashStringToSeed(str: string)
     - _Requirements: 2.1, 2.2_
   
-  - [ ] 3.2 Write property test for RNG determinism
+  - [x] 3.2 Write property test for RNG determinism
     - **Property 3: Palette Generation Determinism**
     - **Validates: Requirements 2.4**
   
-  - [ ] 3.3 Implement palette generation
+  - [x] 3.3 Implement palette generation
     - Create Palette and PaletteRamp interfaces
     - Implement generatePalette(seed: string) with all material ramps
     - Implement hslToHex(h, s, l) conversion
@@ -51,7 +51,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Enforce originality constraints (suitPrimary, suitSecondary)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
   
-  - [ ] 3.4 Write property tests for palette generation
+  - [x] 3.4 Write property tests for palette generation
     - **Property 4: Complete Palette Structure**
     - **Property 5: Palette Jitter Bounds**
     - **Property 6: Suit Primary Originality**
