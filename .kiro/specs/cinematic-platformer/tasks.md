@@ -176,20 +176,20 @@ This implementation plan breaks down the cinematic platformer into incremental c
 - [x] 9. Checkpoint - Verify rendering and collision
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Implement entity base and projectile
-  - [ ] 10.1 Create Entity interface (src/game/entities/entity.ts)
+- [x] 10. Implement entity base and projectile
+  - [x] 10.1 Create Entity interface (src/game/entities/entity.ts)
     - Define Entity interface with pos, vel, bounds, active
     - Define update() and render() methods
     - _Requirements: 10.1, 10.3_
   
-  - [ ] 10.2 Implement Projectile entity (src/game/entities/projectile.ts)
+  - [x] 10.2 Implement Projectile entity (src/game/entities/projectile.ts)
     - Implement velocity-based movement
     - Implement AABB collision with tiles and entities
     - Implement lifetime tracking
     - Track owner (player vs enemy)
     - _Requirements: 10.1, 10.3_
   
-  - [ ] 10.3 Write property tests for projectile
+  - [x] 10.3 Write property tests for projectile
     - **Property 19: Projectile Creation on Shoot**
     - **Validates: Requirements 10.1**
 
