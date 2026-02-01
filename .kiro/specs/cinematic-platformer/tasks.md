@@ -173,7 +173,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test edge cases (same tile, adjacent tiles)
     - _Requirements: 11.2_
 
-- [ ] 9. Checkpoint - Verify rendering and collision
+- [x] 9. Checkpoint - Verify rendering and collision
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Implement entity base and projectile

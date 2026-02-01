@@ -221,7 +221,7 @@ describe("Collision Properties", () => {
 
           // If Y collision detected, normal should be vertical
           if (yCollision.collided) {
-            expect(xCollision.normal.x).toBe(0);
+            expect(yCollision.normal.x).toBe(0);
             expect(Math.abs(yCollision.normal.y)).toBe(1);
           }
 

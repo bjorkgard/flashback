@@ -1,7 +1,7 @@
 # Flashback
 
-![Tests](https://img.shields.io/badge/tests-60%20passing-brightgreen)
-![Test Files](https://img.shields.io/badge/test%20files-5-blue)
+![Tests](https://img.shields.io/badge/tests-102%20passing-brightgreen)
+![Test Files](https://img.shields.io/badge/test%20files-11-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-purple)
@@ -24,14 +24,15 @@ A 2D pixel-art cinematic platformer game built with React, TypeScript, and Vite.
 - Seeded RNG (mulberry32) with string-to-seed hashing
 - Palette generation with deterministic color ramps and originality constraints
 - Sprite generation pipeline with 8-step procedural art system
-- Property-based tests for palette generation, RNG determinism, and sprite generation
+- Rendering system (Camera, Renderer) with aspect ratio preservation
+- Level system (Tilemap, collision detection, raycasting)
+- Property-based tests for palette, sprites, camera, renderer, and collision
 
 🚧 **In Development**
-- Rendering system (canvas, camera, aspect ratio preservation)
 - Entity system (player, enemies, projectiles)
-- Physics and collision detection
-- Rendering system (canvas, camera, aspect ratio preservation)
+- Physics and movement mechanics
 - Game loop and input handling
+- UI components and integration
 
 ## Tech Stack
 
@@ -125,10 +126,10 @@ npm test -- --watch
 
 ### Test Coverage
 
-- 60 tests passing across 5 test files
+- 102 tests passing across 11 test files
 - Comprehensive coverage of math utilities (Vec2, Rect)
-- Property-based tests for RNG determinism, palette generation, and sprite generation
-- 30 correctness properties defined in design document (11 implemented, 19 in progress)
+- Property-based tests for RNG determinism, palette generation, sprite generation, camera, renderer, and collision
+- 30 correctness properties defined in design document (17 implemented, 13 in progress)
 
 ## API Documentation
 
@@ -473,6 +474,184 @@ The sprite generator automatically determines entity type from seed prefix:
 - **PROJECTILE_*** - Projectile (6×3px): idle
 - **MUZZLE_*** - Muzzle flash (10×10px): idle
 - **TILE_*** - Tile (16×16px): idle
+
+### Rendering System
+
+#### Camera
+
+Smooth camera system with follow, look-ahead, and bounds clamping.
+
+```typescript
+/**
+ * Camera for smooth following and viewport management
+ * @param target - Position to follow
+ * @param bounds - Level bounds for clamping
+ * @param viewportWidth - Width of viewport (384)
+ * @param viewportHeight - Height of viewport (216)
+ */
+class Camera {
+  constructor(target: Vec2, bounds: Rect, viewportWidth: number, viewportHeight: number);
+  
+  /**
+   * Update camera position with smooth follow and look-ahead
+   * @param dt - Delta time in seconds
+   * @param targetVelocity - Target's velocity for look-ahead
+   */
+  update(dt: number, targetVelocity: Vec2): void;
+  
+  /**
+   * Get current camera position
+   */
+  getPosition(): Vec2;
+  
+  /**
+   * Set camera target position
+   */
+  setTarget(target: Vec2): void;
+}
+```
+
+#### Renderer
+
+Pixel-perfect rendering with offscreen buffer and aspect ratio preservation.
+
+```typescript
+/**
+ * Renderer for pixel-perfect game graphics
+ * @param canvas - Display canvas element
+ */
+class Renderer {
+  constructor(canvas: HTMLCanvasElement);
+  
+  /**
+   * Render a complete frame
+   * @param camera - Camera for viewport transform
+   * @param tilemap - Level tilemap to render
+   * @param entities - Array of entities to render
+   * @param hud - HUD data (health, ammo, etc.)
+   */
+  render(camera: Camera, tilemap: Tilemap, entities: Entity[], hud: HUDData): void;
+  
+  /**
+   * Get internal buffer dimensions
+   */
+  getBufferSize(): { width: number; height: number };
+}
+```
+
+### Level System
+
+#### Tilemap
+
+Level tile management with efficient lookup and animated tiles.
+
+```typescript
+/**
+ * Manages the tile grid for a game level
+ * @param levelData - Level data to load
+ */
+class Tilemap {
+  constructor(levelData: LevelData);
+  
+  /**
+   * Get tile at grid coordinates
+   * @param x - X coordinate in tile grid
+   * @param y - Y coordinate in tile grid
+   * @returns Tile at position or null if empty/out of bounds
+   */
+  getTileAt(x: number, y: number): Tile | null;
+  
+  /**
+   * Update animated tiles
+   * @param dt - Delta time in seconds
+   */
+  update(dt: number): void;
+  
+  /**
+   * Get level dimensions
+   */
+  getWidth(): number;
+  getHeight(): number;
+  getTileSize(): number;
+}
+
+/**
+ * Load level data from JSON
+ * @param json - JSON object with level data
+ * @returns Parsed LevelData
+ * @throws Error if JSON is invalid
+ */
+function loadLevelFromJSON(json: any): LevelData;
+```
+
+#### Collision Detection
+
+AABB collision detection with axis-by-axis resolution.
+
+```typescript
+/**
+ * Check collision between entity and tilemap
+ * Uses axis-by-axis AABB resolution
+ * @param entityBounds - Entity's bounding box in world coordinates
+ * @param velocity - Entity's velocity vector
+ * @param tilemap - Tilemap to check against
+ * @returns Collision result with normal and penetration
+ */
+function checkTileCollision(
+  entityBounds: Rect,
+  velocity: Vec2,
+  tilemap: Tilemap
+): CollisionResult;
+
+/**
+ * Check collision between two entities (AABB vs AABB)
+ * @param a - First entity's bounding box
+ * @param b - Second entity's bounding box
+ * @returns Collision result with normal and penetration
+ */
+function checkEntityCollision(a: Rect, b: Rect): CollisionResult;
+
+/**
+ * Check if entity overlaps with ladder tiles
+ * @param entityBounds - Entity's bounding box
+ * @param tilemap - Tilemap to check against
+ * @returns True if overlapping a ladder
+ */
+function checkLadderOverlap(entityBounds: Rect, tilemap: Tilemap): boolean;
+
+/**
+ * Check if entity can grab a ledge
+ * Requires near-perfect alignment (±2px tolerance)
+ * @param entityBounds - Entity's bounding box
+ * @param velocity - Entity's velocity
+ * @param tilemap - Tilemap to check against
+ * @returns Ledge grab result with position
+ */
+function checkLedgeGrab(
+  entityBounds: Rect,
+  velocity: Vec2,
+  tilemap: Tilemap
+): LedgeGrabResult;
+```
+
+#### Raycasting
+
+Line-of-sight checks using DDA algorithm.
+
+```typescript
+/**
+ * Raycast from start to end through tilemap
+ * Uses DDA algorithm for efficient grid traversal
+ * @param start - Starting position in world coordinates
+ * @param end - Ending position in world coordinates
+ * @param tilemap - Tilemap to raycast through
+ * @returns Raycast result with hit information
+ */
+function raycastTiles(
+  start: Vec2,
+  end: Vec2,
+  tilemap: Tilemap
+): RaycastResult;
 ```
 
 ## Development Approach
