@@ -1,7 +1,7 @@
 # Flashback
 
-![Tests](https://img.shields.io/badge/tests-56%20passing-brightgreen)
-![Test Files](https://img.shields.io/badge/test%20files-4-blue)
+![Tests](https://img.shields.io/badge/tests-60%20passing-brightgreen)
+![Test Files](https://img.shields.io/badge/test%20files-5-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-purple)
@@ -23,10 +23,11 @@ A 2D pixel-art cinematic platformer game built with React, TypeScript, and Vite.
 - Math utilities (Vec2, Rect) with comprehensive unit tests
 - Seeded RNG (mulberry32) with string-to-seed hashing
 - Palette generation with deterministic color ramps and originality constraints
-- Property-based tests for palette generation and RNG determinism
+- Sprite generation pipeline with 8-step procedural art system
+- Property-based tests for palette generation, RNG determinism, and sprite generation
 
 🚧 **In Development**
-- Sprite generation pipeline (8-step procedural art)
+- Rendering system (canvas, camera, aspect ratio preservation)
 - Entity system (player, enemies, projectiles)
 - Physics and collision detection
 - Rendering system (canvas, camera, aspect ratio preservation)
@@ -88,7 +89,7 @@ flashback/
 │   ├── game/                 # Game engine and logic
 │   │   ├── engine/           # Core systems (loop, input, time)
 │   │   ├── math/             # Math utilities (vec2, rect) ✅
-│   │   ├── render/           # Rendering (sprites, palette, camera, renderer)
+│   │   ├── render/           # Rendering (sprites ✅, palette ✅, camera, renderer)
 │   │   ├── entities/         # Game entities (player, enemies, projectiles)
 │   │   └── level/            # Level data (tilemap, collision, raycast)
 │   ├── ui/                   # React UI components (menus, overlays)
@@ -124,10 +125,10 @@ npm test -- --watch
 
 ### Test Coverage
 
-- 56 tests passing across 4 test files
+- 60 tests passing across 5 test files
 - Comprehensive coverage of math utilities (Vec2, Rect)
-- Property-based tests for RNG determinism and palette generation
-- 30 correctness properties defined in design document (in progress)
+- Property-based tests for RNG determinism, palette generation, and sprite generation
+- 30 correctness properties defined in design document (11 implemented, 19 in progress)
 
 ## API Documentation
 
@@ -268,6 +269,210 @@ function generatePalette(seed: string): Palette;
  * @returns Hex color string (#RRGGBB)
  */
 function hslToHex(h: number, s: number, l: number): string;
+```
+
+### Sprite Generation
+
+#### Sprite Cache and Retrieval
+
+Procedural sprite generation with caching for performance.
+
+```typescript
+/**
+ * Get a specific sprite frame from cache or generate if needed
+ * @param seed - Unique seed for this sprite set (e.g., "PLAYER_001", "ENEMY_HUMANOID_002")
+ * @param animName - Animation name (e.g., "idle", "walk", "shoot")
+ * @param frameIndex - Frame index within the animation
+ * @returns The requested sprite frame
+ */
+function getSprite(seed: string, animName: string, frameIndex: number): SpriteFrame;
+
+/**
+ * Clear the sprite cache (useful for testing or memory management)
+ */
+function clearSpriteCache(): void;
+
+/**
+ * Set a custom palette (useful for testing)
+ * @param palette - Palette object to use globally
+ */
+function setPalette(palette: Palette): void;
+```
+
+#### Animation Generation
+
+Generate complete animation sets from seeds.
+
+```typescript
+/**
+ * Generate all animations for a given seed
+ * Determines entity type from seed prefix and generates appropriate animations
+ * @param seed - Unique seed string
+ * @returns Complete animation set for the entity
+ */
+function generateAllAnimations(seed: string): AnimationSet;
+
+/**
+ * Generate a complete animation sequence
+ * @param animName - Name of the animation
+ * @param frameCount - Number of frames in the animation
+ * @param width - Width of each frame in pixels
+ * @param height - Height of each frame in pixels
+ * @param rng - Random number generator function
+ * @param palette - Color palette to use
+ * @returns Array of sprite frames
+ */
+function generateAnimation(
+  animName: string,
+  frameCount: number,
+  width: number,
+  height: number,
+  rng: () => number,
+  palette: Palette
+): SpriteFrame[];
+
+/**
+ * Generate a single sprite frame using the 8-step pipeline
+ * @param animName - Name of the animation
+ * @param frameIndex - Index of this frame in the animation
+ * @param width - Width in pixels
+ * @param height - Height in pixels
+ * @param rng - Random number generator function
+ * @param palette - Color palette to use
+ * @returns A single sprite frame
+ */
+function generateFrame(
+  animName: string,
+  frameIndex: number,
+  width: number,
+  height: number,
+  rng: () => number,
+  palette: Palette
+): SpriteFrame;
+```
+
+#### 8-Step Pipeline Functions
+
+The sprite generation pipeline consists of 8 steps:
+
+```typescript
+/**
+ * Step A: Generate a silhouette mask for the sprite
+ * Creates basic shapes (capsules for humanoids, rectangles for tiles/projectiles)
+ * @param animName - Animation name to determine shape
+ * @param frameIndex - Frame index for animation variation
+ * @param width - Sprite width
+ * @param height - Sprite height
+ * @param rng - Random number generator
+ * @returns 2D boolean array where true = filled pixel
+ */
+function generateSilhouette(
+  animName: string,
+  frameIndex: number,
+  width: number,
+  height: number,
+  rng: () => number
+): boolean[][];
+
+/**
+ * Step B: Partition the silhouette into material regions
+ * Divides the sprite into zones that will use different material colors
+ * @param mask - Silhouette mask
+ * @param width - Sprite width
+ * @param height - Sprite height
+ * @returns 2D array of region IDs (0 = empty, 1+ = material regions)
+ */
+function partitionRegions(
+  mask: boolean[][],
+  width: number,
+  height: number
+): number[][];
+
+/**
+ * Step C: Apply lighting with quantized color ramps
+ * Maps regions to palette colors and applies lighting based on position
+ * @param imageData - Image data to modify
+ * @param regions - Region map
+ * @param palette - Color palette
+ */
+function applyLighting(
+  imageData: ImageData,
+  regions: number[][],
+  palette: Palette
+): void;
+
+/**
+ * Step D: Apply 4×4 Bayer ordered dithering for texture
+ * @param imageData - Image data to modify
+ * @param width - Image width
+ * @param height - Image height
+ */
+function applyDithering(
+  imageData: ImageData,
+  width: number,
+  height: number
+): void;
+
+/**
+ * Step E: Add 1-pixel outline with 2-pixel bottom weight
+ * @param imageData - Image data to modify
+ * @param mask - Silhouette mask
+ * @param width - Image width
+ * @param height - Image height
+ * @param outlineColor - Hex color for outline
+ */
+function addOutline(
+  imageData: ImageData,
+  mask: boolean[][],
+  width: number,
+  height: number,
+  outlineColor: string
+): void;
+
+/**
+ * Step E: Add rim light highlights
+ * @param imageData - Image data to modify
+ * @param mask - Silhouette mask
+ * @param width - Image width
+ * @param height - Image height
+ * @param palette - Color palette
+ */
+function addRimLight(
+  imageData: ImageData,
+  mask: boolean[][],
+  width: number,
+  height: number,
+  palette: Palette
+): void;
+
+/**
+ * Step F: Add micro-details for visual features
+ * Adds small details like bolts, seams, vents
+ * @param imageData - Image data to modify
+ * @param regions - Region map
+ * @param width - Image width
+ * @param height - Image height
+ * @param palette - Color palette
+ */
+function addMicroDetails(
+  imageData: ImageData,
+  regions: number[][],
+  width: number,
+  height: number,
+  palette: Palette
+): void;
+```
+
+#### Supported Entity Types
+
+The sprite generator automatically determines entity type from seed prefix:
+
+- **PLAYER_*** - Player character (24×40px): idle, walk, run, jump, fall, landRecover, roll, hang, climbUp, shoot, hurt, dead
+- **ENEMY_HUMANOID_*** - Humanoid enemy (22×38px): patrol, alert, shoot, hurt, dead
+- **ENEMY_DRONE_*** - Drone enemy (26×18px): patrol, alert, shoot, hurt, dead
+- **PROJECTILE_*** - Projectile (6×3px): idle
+- **MUZZLE_*** - Muzzle flash (10×10px): idle
+- **TILE_*** - Tile (16×16px): idle
 ```
 
 ## Development Approach

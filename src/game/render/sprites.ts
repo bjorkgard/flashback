@@ -227,10 +227,10 @@ export function generateFrame(
   const mask = generateSilhouette(animName, frameIndex, width, height, rng);
 
   // Step B: Partition into material regions
-  const regions = partitionRegions(mask, width, height, rng);
+  const regions = partitionRegions(mask, width, height);
 
   // Step C: Apply lighting ramps (quantized)
-  applyLighting(imageData, regions, palette, rng);
+  applyLighting(imageData, regions, palette);
 
   // Step D: Apply 4×4 Bayer dithering
   applyDithering(imageData, width, height);
@@ -240,7 +240,7 @@ export function generateFrame(
   addRimLight(imageData, mask, width, height, palette);
 
   // Step F: Add micro-details
-  addMicroDetails(imageData, regions, width, height, palette, rng);
+  addMicroDetails(imageData, regions, width, height, palette);
 
   // Put the image data on the canvas
   ctx.putImageData(imageData, 0, 0);
@@ -277,7 +277,7 @@ export function generateSilhouette(
 
   if (isHumanoid) {
     // Generate capsule shape for humanoid characters
-    generateCapsule(mask, width, height, frameIndex, rng);
+    generateCapsule(mask, width, height);
   } else if (isTile) {
     // Generate filled rectangle for tiles
     generateRectangle(mask, width, height, 0, 0, width, height);
@@ -296,13 +296,15 @@ export function generateSilhouette(
 /**
  * Generate a capsule (rounded rectangle) shape
  * Used for humanoid characters
+ * 
+ * @param mask - 2D boolean array to fill with shape
+ * @param width - Sprite width
+ * @param height - Sprite height
  */
 function generateCapsule(
   mask: boolean[][],
   width: number,
-  height: number,
-  _frameIndex: number,
-  _rng: () => number
+  height: number
 ): void {
   const centerX = width / 2;
   
@@ -338,6 +340,14 @@ function generateCapsule(
 
 /**
  * Generate a filled rectangle
+ * 
+ * @param mask - 2D boolean array to fill with shape
+ * @param width - Sprite width
+ * @param height - Sprite height
+ * @param x - X coordinate of top-left corner
+ * @param y - Y coordinate of top-left corner
+ * @param w - Rectangle width
+ * @param h - Rectangle height
  */
 function generateRectangle(
   mask: boolean[][],
@@ -357,6 +367,10 @@ function generateRectangle(
 
 /**
  * Generate an ellipse shape
+ * 
+ * @param mask - 2D boolean array to fill with shape
+ * @param width - Sprite width
+ * @param height - Sprite height
  */
 function generateEllipse(
   mask: boolean[][],
@@ -392,8 +406,7 @@ function generateEllipse(
 export function partitionRegions(
   mask: boolean[][],
   width: number,
-  height: number,
-  _rng: () => number
+  height: number
 ): number[][] {
   const regions: number[][] = Array(height).fill(null).map(() => Array(width).fill(0));
 
@@ -453,8 +466,7 @@ export function partitionRegions(
 export function applyLighting(
   imageData: ImageData,
   regions: number[][],
-  palette: Palette,
-  _rng: () => number
+  palette: Palette
 ): void {
   const height = regions.length;
   const width = regions[0]?.length || 0;
@@ -492,6 +504,9 @@ export function applyLighting(
 
 /**
  * Convert hex color to RGB
+ * 
+ * @param hex - Hex color string (e.g., "#FF0000")
+ * @returns RGB color object with r, g, b values (0-255)
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -656,8 +671,7 @@ export function addMicroDetails(
   regions: number[][],
   width: number,
   height: number,
-  palette: Palette,
-  _rng: () => number
+  palette: Palette
 ): void {
   const detailColor = hexToRgb(palette.shadowInk.colors[1]);
 
