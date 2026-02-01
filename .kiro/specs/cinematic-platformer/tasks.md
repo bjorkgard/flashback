@@ -130,25 +130,25 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test offscreen canvas usage
     - _Requirements: 1.1, 1.2, 1.5, 1.6_
 
-- [ ] 8. Implement level and collision systems
-  - [ ] 8.1 Create tile types and level data structures (src/game/level/tileTypes.ts, levelTypes.ts)
+- [x] 8. Implement level and collision systems
+  - [x] 8.1 Create tile types and level data structures (src/game/level/tileTypes.ts, levelTypes.ts)
     - Define TileType enum and Tile interface
     - Define LevelData interface
     - _Requirements: 12.1, 12.2, 12.3_
   
-  - [ ] 8.2 Create Tilemap class (src/game/level/tilemap.ts)
+  - [x] 8.2 Create Tilemap class (src/game/level/tilemap.ts)
     - Implement level loading from JSON
     - Implement getTileAt(x, y) with bounds checking
     - Handle animated tiles (hazards, checkpoints, exits)
     - _Requirements: 12.1, 12.2, 12.3_
   
-  - [ ] 8.3 Write unit tests for tilemap
+  - [x] 8.3 Write unit tests for tilemap
     - Test JSON loading and parsing
     - Test getTileAt with valid and out-of-bounds coordinates
     - Test tile type support
     - _Requirements: 12.1, 12.2, 12.3_
   
-  - [ ] 8.4 Implement collision detection (src/game/level/collision.ts)
+  - [x] 8.4 Implement collision detection (src/game/level/collision.ts)
     - Implement checkTileCollision() with axis-by-axis AABB
     - Implement checkEntityCollision() for AABB vs AABB
     - Implement checkLadderOverlap()
@@ -156,18 +156,18 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Handle one-way platforms (only collide from above)
     - _Requirements: 8.6, 10.3, 12.4_
   
-  - [ ] 8.5 Write property tests for collision
+  - [x] 8.5 Write property tests for collision
     - **Property 17: Ledge Grab Precision**
     - **Property 21: Projectile Collision Detection**
     - **Property 28: Axis-by-Axis Collision Resolution**
     - **Validates: Requirements 8.6, 10.3, 12.4**
   
-  - [ ] 8.6 Implement raycasting (src/game/level/raycast.ts)
+  - [x] 8.6 Implement raycasting (src/game/level/raycast.ts)
     - Implement raycastTiles() using DDA algorithm
     - Return first solid tile hit along ray
     - _Requirements: 11.2_
   
-  - [ ] 8.7 Write unit tests for raycasting
+  - [x] 8.7 Write unit tests for raycasting
     - Test line-of-sight with clear path
     - Test line-of-sight blocked by solid tile
     - Test edge cases (same tile, adjacent tiles)
