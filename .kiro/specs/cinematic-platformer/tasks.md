@@ -62,33 +62,33 @@ This implementation plan breaks down the cinematic platformer into incremental c
 - [x] 4. Checkpoint - Verify palette generation
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement sprite generation pipeline
-  - [ ] 5.1 Create sprite types and cache (src/game/render/sprites.ts)
+- [x] 5. Implement sprite generation pipeline
+  - [x] 5.1 Create sprite types and cache (src/game/render/sprites.ts)
     - Define SpriteFrame, AnimationSet interfaces
     - Create sprite cache Map
     - Implement getSprite(seed, animName, frameIndex) with caching
     - _Requirements: 4.1, 4.3, 4.4, 4.5, 4.6_
   
-  - [ ] 5.2 Implement silhouette and region generation
+  - [x] 5.2 Implement silhouette and region generation
     - Implement generateSilhouette() for basic shapes (capsules, rectangles)
     - Implement partitionRegions() to divide into material zones
     - _Requirements: 4.2_
   
-  - [ ] 5.3 Implement lighting, dithering, and details
+  - [x] 5.3 Implement lighting, dithering, and details
     - Implement applyLighting() with quantized ramps
     - Implement applyDithering() with 4×4 Bayer matrix
     - Implement addOutline() and addRimLight()
     - Implement addMicroDetails() for visual features
     - _Requirements: 4.2, 4.7, 4.8_
   
-  - [ ] 5.4 Implement animation frame generation
+  - [x] 5.4 Implement animation frame generation
     - Implement generateFrame() combining all pipeline steps
     - Implement generateAnimation() for frame sequences
     - Implement generateAllAnimations() for complete animation sets
     - Handle player, humanoid enemy, drone enemy, projectile, and tile sprites
     - _Requirements: 4.2, 5.1-5.12, 6.1-6.5, 7.1-7.7_
   
-  - [ ] 5.5 Write property tests for sprite generation
+  - [x] 5.5 Write property tests for sprite generation
     - **Property 2: Sprite Generation Determinism**
     - **Property 9: Correct Sprite Dimensions**
     - **Property 10: Complete Animation Frame Sets**
