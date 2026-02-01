@@ -99,19 +99,19 @@ This implementation plan breaks down the cinematic platformer into incremental c
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 7. Implement rendering system
-  - [ ] 7.1 Create Camera class (src/game/render/camera.ts)
+- [x] 7. Implement rendering system
+  - [x] 7.1 Create Camera class (src/game/render/camera.ts)
     - Implement smooth follow with lerp
     - Implement look-ahead based on target velocity
     - Implement bounds clamping
     - _Requirements: 12.5, 12.6_
   
-  - [ ] 7.2 Write property tests for camera
+  - [x] 7.2 Write property tests for camera
     - **Property 29: Smooth Camera Follow**
     - **Property 30: Camera Bounds Clamping**
     - **Validates: Requirements 12.5, 12.6**
   
-  - [ ] 7.3 Create Renderer class (src/game/render/renderer.ts)
+  - [x] 7.3 Create Renderer class (src/game/render/renderer.ts)
     - Create offscreen canvas (384×216) and display canvas
     - Disable image smoothing on display context
     - Implement render() method: clear, apply camera transform, render tiles/entities/HUD
@@ -120,11 +120,11 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Implement renderHUD() with procedural bitmap font
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 13.2_
   
-  - [ ] 7.4 Write property test for aspect ratio preservation
+  - [x] 7.4 Write property test for aspect ratio preservation
     - **Property 1: Aspect Ratio Preservation**
     - **Validates: Requirements 1.3, 1.4**
   
-  - [ ] 7.5 Write unit tests for renderer
+  - [x] 7.5 Write unit tests for renderer
     - Test internal buffer dimensions (384×216)
     - Test imageSmoothingEnabled is false
     - Test offscreen canvas usage
