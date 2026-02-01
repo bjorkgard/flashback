@@ -4,7 +4,8 @@
 
 ## Current State
 - ✅ Math utilities (Vec2, Rect) with comprehensive tests
-- 🚧 In development: RNG, palette generation, sprite generation
+- ✅ RNG and palette generation with property-based tests
+- 🚧 In development: Sprite generation pipeline
 - 🚧 Planned: Entity system, physics, collision, rendering, game loop
 
 ## Key Features

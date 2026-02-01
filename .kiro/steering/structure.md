@@ -82,13 +82,23 @@ flashback/
 
 ## Implementation Guidelines
 
-### Math Utilities (✅ Complete)
+### Completed Modules
+
+#### Math Utilities (✅ Complete)
 - `vec2.ts`: 2D vector operations (add, sub, mul, length, normalize, lerp)
 - `rect.ts`: Rectangle operations (intersects, contains) for AABB collision
 - Comprehensive unit tests with edge cases (zero vectors, negative coords)
+- Full JSDoc documentation
+
+#### RNG and Palette Generation (✅ Complete)
+- `palette.ts`: Seeded RNG (mulberry32) with string-to-seed hashing
+- Deterministic palette generation with 11 material ramps
+- HSL to hex color conversion
+- Originality constraints for suit colors
+- Property-based tests for determinism and structure
+- Full JSDoc documentation
 
 ### Next Steps
-- RNG and palette generation (deterministic seeded generation)
 - Sprite generation pipeline (8-step procedural art)
 - Rendering system (canvas, camera, aspect ratio preservation)
 - Entity system (player, enemies, projectiles)
