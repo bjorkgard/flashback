@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Code Quality Monitor",
+  "description": "Monitors source code files for changes and provides automated code quality analysis including code smells, design patterns, and best practices suggestions",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the modified source code files for code quality issues. Please review for:\n\n1. **Code Smells**: Identify any code smells such as long functions, duplicate code, complex conditionals, or poor naming conventions\n2. **Design Patterns**: Suggest appropriate design patterns that could improve the code structure\n3. **Best Practices**: Check adherence to React, TypeScript, and general software engineering best practices\n4. **Architecture**: Evaluate if the code follows the established project structure and conventions\n5. **Performance**: Identify potential performance issues or optimization opportunities\n6. **Maintainability**: Assess code readability, modularity, and ease of maintenance\n\nFocus on actionable suggestions that align with the project's tech stack (React 19, TypeScript, Tailwind CSS, shadcn/ui) and established conventions. Provide specific recommendations for improvement with code examples where helpful."
+  },
+  "workspaceFolderName": "lode-runner",
+  "shortName": "code-quality-monitor"
+}

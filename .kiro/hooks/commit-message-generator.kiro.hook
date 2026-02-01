@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Commit Message Generator",
+  "description": "Analyzes file changes and generates conventional commit messages with proper type, scope, and description",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the changes made to the files not commited and generate a commit message following these guidelines:\n\n1. Review what files were modified and understand the nature of the changes\n2. Identify the commit type using conventional commits format:\n   - feat: New feature or functionality\n   - fix: Bug fix\n   - refactor: Code restructuring without behavior change\n   - docs: Documentation changes\n   - style: Code style/formatting changes\n   - test: Adding or updating tests\n   - chore: Build process, dependencies, or tooling changes\n   - perf: Performance improvements\n\n3. Determine the scope based on the affected area:\n   - Component names (e.g., Button, DataTable)\n   - Feature areas (e.g., auth, api, campaigns, materialSpecifications)\n   - Infrastructure (e.g., build, config, deps)\n\n4. Write a clear, concise summary (aim for under 50 characters)\n5. If changes are complex or affect multiple areas, add a longer description explaining:\n   - What changed and why\n   - Any breaking changes\n   - Related issues or context\n\nFormat the output as:\n```\ntype(scope): summary\n\nOptional longer description here.\nCan span multiple lines if needed.\n```\n\nPresent the commit message in a code block for easy copying."
+  },
+  "workspaceFolderName": "campaign-frontend",
+  "shortName": "commit-message-generator"
+}

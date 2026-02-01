@@ -1,0 +1,15 @@
+{
+  "enabled": false,
+  "name": "Documentation Sync",
+  "description": "Listens to TypeScript source files, configuration files, and package.json changes to automatically update project documentation in README.md",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Source files have been modified. Please review the changes and update the documentation accordingly. If there is a README.md file, update it with any new features, API changes, or configuration updates. If there is a /docs folder, update the relevant documentation files there as well. Focus on keeping the documentation accurate and up-to-date with the current codebase functionality. Update shield to show the actually number of tests. Add or update jsdoc."
+  },
+  "workspaceFolderName": "campaign-frontend",
+  "shortName": "docs-sync-hook"
+}
