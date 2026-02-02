@@ -262,23 +262,23 @@ This implementation plan breaks down the cinematic platformer into incremental c
 - [x] 13. Checkpoint - Verify entity systems
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. Implement game loop and input
-  - [ ] 14.1 Create InputSystem (src/game/engine/input.ts)
+- [x] 14. Implement game loop and input
+  - [x] 14.1 Create InputSystem (src/game/engine/input.ts)
     - Track keyboard state (keys Map)
     - Implement isDown(), wasPressed(), wasReleased()
     - Update previous state each frame
     - _Requirements: 9.3_
   
-  - [ ] 14.2 Write property test for input sampling
+  - [x] 14.2 Write property test for input sampling
     - **Property 18: Deterministic Input Sampling**
     - **Validates: Requirements 9.3**
   
-  - [ ] 14.3 Create TimeSystem (src/game/engine/time.ts)
+  - [x] 14.3 Create TimeSystem (src/game/engine/time.ts)
     - Manage delta time and accumulator
     - Provide current time and frame count
     - _Requirements: 9.1_
   
-  - [ ] 14.4 Create GameLoop (src/game/engine/loop.ts)
+  - [x] 14.4 Create GameLoop (src/game/engine/loop.ts)
     - Implement fixed 60Hz timestep with accumulator
     - Implement fixedUpdate() for game logic
     - Implement render() with interpolation alpha
@@ -287,7 +287,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Handle game state modes (menu, playing, paused, gameOver, won)
     - _Requirements: 9.1, 9.2, 10.3, 10.4, 15.8_
   
-  - [ ] 14.5 Write unit tests for game loop
+  - [x] 14.5 Write unit tests for game loop
     - Test fixed timestep execution
     - Test accumulator behavior
     - Test F3 debug toggle

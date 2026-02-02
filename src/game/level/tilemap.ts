@@ -11,21 +11,32 @@ import type { LevelData } from "./levelTypes";
  * Provides efficient tile lookup and handles animated tiles.
  */
 export class Tilemap {
-  private width: number;
-  private height: number;
-  private tileSize: number;
+  private _width: number;
+  private _height: number;
+  private _tileSize: number;
   private tiles: Map<string, Tile>;
   private animatedTiles: Tile[];
   private animationTime: number = 0;
+  
+  // Public properties for renderer interface compatibility
+  public width: number;
+  public height: number;
+  public tileSize: number;
 
   /**
    * Creates a new Tilemap from level data.
    * @param levelData - The level data to load
    */
   constructor(levelData: LevelData) {
+    this._width = levelData.width;
+    this._height = levelData.height;
+    this._tileSize = levelData.tileSize;
+    
+    // Set public properties
     this.width = levelData.width;
     this.height = levelData.height;
     this.tileSize = levelData.tileSize;
+    
     this.tiles = new Map();
     this.animatedTiles = [];
 
@@ -38,7 +49,7 @@ export class Tilemap {
       }
 
       // Skip tiles outside level bounds
-      if (tile.x < 0 || tile.x >= this.width || tile.y < 0 || tile.y >= this.height) {
+      if (tile.x < 0 || tile.x >= this._width || tile.y < 0 || tile.y >= this._height) {
         console.warn(`Skipping tile outside bounds: (${tile.x}, ${tile.y})`);
         continue;
       }
@@ -61,7 +72,7 @@ export class Tilemap {
    */
   getTileAt(x: number, y: number): Tile | null {
     // Return null for out-of-bounds access
-    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+    if (x < 0 || x >= this._width || y < 0 || y >= this._height) {
       return null;
     }
 
@@ -73,21 +84,21 @@ export class Tilemap {
    * Gets the width of the level in tiles.
    */
   getWidth(): number {
-    return this.width;
+    return this._width;
   }
 
   /**
    * Gets the height of the level in tiles.
    */
   getHeight(): number {
-    return this.height;
+    return this._height;
   }
 
   /**
    * Gets the tile size in pixels.
    */
   getTileSize(): number {
-    return this.tileSize;
+    return this._tileSize;
   }
 
   /**
