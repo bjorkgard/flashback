@@ -293,8 +293,8 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test F3 debug toggle
     - _Requirements: 9.1, 9.4_
 
-- [ ] 15. Create sample level
-  - [ ] 15.1 Design and create sample level JSON (src/game/level/sampleLevel.json)
+- [x] 15. Create sample level
+  - [x] 15.1 Design and create sample level JSON (src/game/level/sampleLevel.json)
     - Create level teaching walking/jumping (section 1)
     - Add ladder climbing section (section 2)
     - Add deliberate gap jump (section 3)
@@ -305,7 +305,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Add exit trigger at end
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8_
   
-  - [ ] 15.2 Write unit tests for sample level
+  - [x] 15.2 Write unit tests for sample level
     - Test level loads successfully
     - Test all required elements present (enemies, hazard, checkpoint, exit)
     - Test player spawn position is valid
