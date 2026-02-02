@@ -95,6 +95,11 @@ export class Game {
       levelData.playerSpawn.y
     );
     
+    // Initialize camera to player position immediately
+    camera.setTarget(player.pos);
+    camera.setTargetVelocity(player.vel);
+    camera.update(0); // Force immediate update to center on player
+    
     // Create enemies
     const enemies: Enemy[] = levelData.enemies.map(enemyData => {
       return new Enemy(

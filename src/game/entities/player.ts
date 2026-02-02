@@ -587,7 +587,7 @@ export class Player implements Entity {
     this.bounds.x = newPos.x;
     const xCollision = checkTileCollision(this.bounds, this.vel, tilemap);
     if (xCollision.collided) {
-      this.bounds.x -= xCollision.normal.x * xCollision.penetration;
+      this.bounds.x += xCollision.normal.x * xCollision.penetration;
       this.vel.x = 0;
     }
     
@@ -595,7 +595,7 @@ export class Player implements Entity {
     this.bounds.y = newPos.y;
     const yCollision = checkTileCollision(this.bounds, this.vel, tilemap);
     if (yCollision.collided) {
-      this.bounds.y -= yCollision.normal.y * yCollision.penetration;
+      this.bounds.y += yCollision.normal.y * yCollision.penetration;
       this.vel.y = 0;
       
       // Check if landed on ground
@@ -613,6 +613,10 @@ export class Player implements Entity {
     // Final validation
     this.vel = this.sanitizeVector(this.vel);
     this.pos = this.sanitizeVector(this.pos);
+    
+    // Sync bounds back to sanitized position
+    this.bounds.x = this.pos.x;
+    this.bounds.y = this.pos.y;
   }
   
   /**

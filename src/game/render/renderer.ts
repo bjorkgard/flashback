@@ -216,10 +216,23 @@ export class Renderer {
    */
   private renderTile(tile: RenderableTile, x: number, y: number): void {
     try {
-      const sprite = getSprite(`TILE_${tile.type.toUpperCase()}`, "idle", 0);
-      this.offscreenCtx.putImageData(sprite.imageData, x, y);
+      const spriteSeed = `TILE_${tile.type.toUpperCase()}`;
+      const sprite = getSprite(spriteSeed, "idle", 0);
+      
+      // putImageData ignores transforms, so we need to create a temporary canvas
+      // and draw it using drawImage which respects transforms
+      const tempCanvas = new OffscreenCanvas(sprite.width, sprite.height);
+      const tempCtx = tempCanvas.getContext("2d");
+      if (!tempCtx) {
+        throw new Error("Failed to get temp canvas context");
+      }
+      tempCtx.putImageData(sprite.imageData, 0, 0);
+      
+      // Now draw the temp canvas with transforms applied
+      this.offscreenCtx.drawImage(tempCanvas as unknown as CanvasImageSource, x, y);
     } catch (error) {
       // Fallback: render a colored rectangle if sprite generation fails
+      console.error(`Failed to render tile ${tile.type} at (${x}, ${y}):`, error);
       this.offscreenCtx.fillStyle = this.palette.metalCool.colors[2];
       this.offscreenCtx.fillRect(x, y, 16, 16);
     }
@@ -230,12 +243,11 @@ export class Renderer {
    * @param entity - Entity to render
    */
   private renderEntity(entity: RenderableEntity): void {
-    // For now, render a simple colored rectangle
-    // This will be enhanced when entity types are implemented
+    // Render entity at its bounds position
     this.offscreenCtx.fillStyle = this.palette.suitPrimary.colors[2];
     this.offscreenCtx.fillRect(
-      entity.pos.x + entity.bounds.x,
-      entity.pos.y + entity.bounds.y,
+      entity.bounds.x,
+      entity.bounds.y,
       entity.bounds.w,
       entity.bounds.h
     );
@@ -332,16 +344,21 @@ export class Renderer {
   private scaleToDisplay(): void {
     const displayW = this.displayCanvas.width;
     const displayH = this.displayCanvas.height;
-    // const aspectRatio = this.internalWidth / this.internalHeight; // 16:9
+
+    // Check for invalid canvas size
+    if (displayW === 0 || displayH === 0) {
+      console.warn("Display canvas has zero size, skipping render");
+      return;
+    }
 
     // Calculate scale to fit while preserving aspect ratio
-    let scale = Math.min(displayW / this.internalWidth, displayH / this.internalHeight);
-    let scaledW = this.internalWidth * scale;
-    let scaledH = this.internalHeight * scale;
+    const scale = Math.min(displayW / this.internalWidth, displayH / this.internalHeight);
+    const scaledW = this.internalWidth * scale;
+    const scaledH = this.internalHeight * scale;
 
     // Center with letterbox/pillarbox
-    let offsetX = (displayW - scaledW) / 2;
-    let offsetY = (displayH - scaledH) / 2;
+    const offsetX = (displayW - scaledW) / 2;
+    const offsetY = (displayH - scaledH) / 2;
 
     // Clear display canvas (black bars for letterbox/pillarbox)
     this.displayCtx.fillStyle = "#000";

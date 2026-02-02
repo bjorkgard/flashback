@@ -20,10 +20,17 @@ function App() {
 
   // Initialize game on mount
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    
+    // Set initial canvas size BEFORE creating game
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
 
     // Create game instance
-    const game = new Game(canvasRef.current, sampleLevelData);
+    const game = new Game(canvas, sampleLevelData);
     gameRef.current = game;
 
     // Set up mode polling to sync React state with game state
@@ -51,9 +58,6 @@ function App() {
         renderer.updateDisplaySize(canvas.width, canvas.height);
       }
     };
-
-    // Initial resize
-    handleResize();
 
     // Listen for window resize
     window.addEventListener('resize', handleResize);
