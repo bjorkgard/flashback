@@ -125,6 +125,13 @@ export class Renderer {
   }
 
   /**
+   * Get the display canvas element
+   */
+  getCanvas(): HTMLCanvasElement {
+    return this.displayCanvas;
+  }
+
+  /**
    * Main render method
    * @param level - Tilemap to render
    * @param entities - Entities to render

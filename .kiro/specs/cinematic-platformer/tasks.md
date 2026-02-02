@@ -311,48 +311,48 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test player spawn position is valid
     - _Requirements: 15.1-15.8_
 
-- [ ] 16. Implement React UI components
-  - [ ] 16.1 Create StartMenu component (src/ui/StartMenu.tsx)
+- [x] 16. Implement React UI components
+  - [x] 16.1 Create StartMenu component (src/ui/StartMenu.tsx)
     - Display game title with Tailwind styling
     - Show "Start Game" button
     - Display control instructions (WASD, Space, Shift, E, F)
     - Handle start button click to begin game
     - _Requirements: 13.1, 13.3, 13.4_
   
-  - [ ] 16.2 Create PauseMenu component (src/ui/PauseMenu.tsx)
+  - [x] 16.2 Create PauseMenu component (src/ui/PauseMenu.tsx)
     - Display "Paused" with Tailwind styling
     - Show "Resume" and "Quit" buttons
     - Display control instructions
     - Handle resume/quit actions
     - _Requirements: 13.1, 13.3, 13.4_
   
-  - [ ] 16.3 Create GameOver component (src/ui/GameOver.tsx)
+  - [x] 16.3 Create GameOver component (src/ui/GameOver.tsx)
     - Display "Game Over" message with Tailwind styling
     - Show "Retry" and "Main Menu" buttons
     - Handle retry/menu actions
     - _Requirements: 13.1, 13.4_
   
-  - [ ] 16.4 Create Win component (src/ui/Win.tsx)
+  - [x] 16.4 Create Win component (src/ui/Win.tsx)
     - Display "Victory!" message with Tailwind styling
     - Show "Play Again" and "Main Menu" buttons
     - Handle play again/menu actions
     - _Requirements: 13.1, 13.4_
   
-  - [ ] 16.5 Write unit tests for UI components
+  - [x] 16.5 Write unit tests for UI components
     - Test component rendering
     - Test button click handlers
     - Test control instructions display
     - _Requirements: 13.3, 13.4_
 
-- [ ] 17. Integrate game with React App
-  - [ ] 17.1 Create Game component (src/game/game.ts)
+- [x] 17. Integrate game with React App
+  - [x] 17.1 Create Game component (src/game/game.ts)
     - Initialize renderer, camera, input, level, entities
     - Create GameLoop instance
     - Provide start(), stop(), pause(), resume() methods
     - Handle state transitions between menu/playing/paused/gameOver/won
     - _Requirements: 9.1, 9.2, 14.4_
   
-  - [ ] 17.2 Update App.tsx to integrate game
+  - [x] 17.2 Update App.tsx to integrate game
     - Create canvas element with ref
     - Manage game state (menu, playing, paused, gameOver, won)
     - Render appropriate UI overlay based on state
@@ -361,13 +361,13 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Apply Tailwind classes for layout and styling
     - _Requirements: 1.3, 1.4, 13.1, 14.4_
   
-  - [ ] 17.3 Update index.css with Tailwind and game styles
+  - [x] 17.3 Update index.css with Tailwind and game styles
     - Ensure Tailwind directives are present
     - Add styles for canvas container (centered, max-width)
     - Add styles for letterbox/pillarbox (black background)
     - _Requirements: 1.4, 14.2_
   
-  - [ ] 17.4 Write integration tests
+  - [x] 17.4 Write integration tests
     - Test game initialization
     - Test state transitions (menu→playing→paused→playing)
     - Test win condition triggers Win screen
