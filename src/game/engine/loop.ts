@@ -282,6 +282,16 @@ export class GameLoop {
       return;
     }
     
+    // Check if player fell out of bounds (death plane)
+    const levelBounds = this.state.level.getBounds();
+    const DEATH_PLANE_OFFSET = 100; // Allow falling 100px below level before death
+    if (this.state.player.pos.y > levelBounds.y + levelBounds.h + DEATH_PLANE_OFFSET) {
+      this.state.player.health = 0;
+      this.state.player.state = 'dead';
+      this.state.mode = 'gameOver';
+      return;
+    }
+    
     // Check if player reached exit
     const playerTileX = Math.floor(this.state.player.pos.x / this.state.level.getTileSize());
     const playerTileY = Math.floor(this.state.player.pos.y / this.state.level.getTileSize());

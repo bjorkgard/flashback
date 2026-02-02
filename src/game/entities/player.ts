@@ -583,19 +583,31 @@ export class Player implements Entity {
     // Update position
     const newPos = add(this.pos, mul(this.vel, dt));
     
-    // Check X-axis collision
-    this.bounds.x = newPos.x;
-    const xCollision = checkTileCollision(this.bounds, this.vel, tilemap);
+    // Get level bounds
+    const levelBounds = tilemap.getBounds();
+    
+    // Clamp X position to level bounds
+    const minX = levelBounds.x;
+    const maxX = levelBounds.x + levelBounds.w - this.bounds.w;
+    const clampedX = Math.max(minX, Math.min(maxX, newPos.x));
+    newPos.x = clampedX;
+    
+    // Check X-axis collision (use a temporary bounds for checking)
+    const tempBounds = { ...this.bounds, x: newPos.x };
+    const xCollision = checkTileCollision(tempBounds, this.vel, tilemap);
     if (xCollision.collided) {
-      this.bounds.x += xCollision.normal.x * xCollision.penetration;
+      newPos.x += xCollision.normal.x * xCollision.penetration;
       this.vel.x = 0;
     }
     
-    // Check Y-axis collision
-    this.bounds.y = newPos.y;
-    const yCollision = checkTileCollision(this.bounds, this.vel, tilemap);
+    // Update X position
+    this.bounds.x = newPos.x;
+    
+    // Check Y-axis collision (use a temporary bounds for checking)
+    const tempBounds2 = { ...this.bounds, y: newPos.y };
+    const yCollision = checkTileCollision(tempBounds2, this.vel, tilemap);
     if (yCollision.collided) {
-      this.bounds.y += yCollision.normal.y * yCollision.penetration;
+      newPos.y += yCollision.normal.y * yCollision.penetration;
       this.vel.y = 0;
       
       // Check if landed on ground
@@ -605,6 +617,9 @@ export class Player implements Entity {
     } else {
       this.grounded = false;
     }
+    
+    // Update Y position
+    this.bounds.y = newPos.y;
     
     // Update position from bounds
     this.pos.x = this.bounds.x;

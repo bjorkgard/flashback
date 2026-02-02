@@ -243,6 +243,13 @@ export class Renderer {
    * @param entity - Entity to render
    */
   private renderEntity(entity: RenderableEntity): void {
+    // Check if entity is out of bounds
+    const isPlayer = entity.bounds.w === 24 && entity.bounds.h === 40;
+    
+    if (isPlayer && (entity.bounds.y < 0 || entity.bounds.y > 500)) {
+      console.warn(`[Render] Player out of bounds: (${Math.floor(entity.bounds.x)}, ${Math.floor(entity.bounds.y)})`);
+    }
+    
     // Render entity at its bounds position
     this.offscreenCtx.fillStyle = this.palette.suitPrimary.colors[2];
     this.offscreenCtx.fillRect(

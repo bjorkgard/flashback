@@ -141,20 +141,28 @@ export function checkTileCollision(
           };
 
           if (rectsIntersect(entityBounds, tileRect)) {
-            collided = true;
+            // Calculate overlap on both axes to determine collision type
+            const overlapX = Math.min(entityBounds.x + entityBounds.w, tileRect.x + tileRect.w) - Math.max(entityBounds.x, tileRect.x);
+            const overlapY = Math.min(entityBounds.y + entityBounds.h, tileRect.y + tileRect.h) - Math.max(entityBounds.y, tileRect.y);
             
-            // Calculate penetration and normal
-            if (velocity.x > 0) {
-              // Moving right, hit left side of tile
-              penetration = (entityBounds.x + entityBounds.w) - tileRect.x;
-              normal = { x: -1, y: 0 };
-            } else {
-              // Moving left, hit right side of tile
-              penetration = (tileRect.x + tileRect.w) - entityBounds.x;
-              normal = { x: 1, y: 0 };
+            // Only treat as X-axis collision if X overlap is significantly less than Y overlap
+            // This prevents floor/ceiling tiles from being treated as walls
+            if (overlapX < overlapY - 1) {
+              collided = true;
+              
+              // Calculate penetration and normal
+              if (velocity.x > 0) {
+                // Moving right, hit left side of tile
+                penetration = (entityBounds.x + entityBounds.w) - tileRect.x;
+                normal = { x: -1, y: 0 };
+              } else {
+                // Moving left, hit right side of tile
+                penetration = (tileRect.x + tileRect.w) - entityBounds.x;
+                normal = { x: 1, y: 0 };
+              }
+              
+              return { collided, normal, penetration };
             }
-            
-            return { collided, normal, penetration };
           }
         }
       }
@@ -186,20 +194,28 @@ export function checkTileCollision(
           }
 
           if (rectsIntersect(entityBounds, tileRect)) {
-            collided = true;
+            // Calculate overlap on both axes to determine collision type
+            const overlapX = Math.min(entityBounds.x + entityBounds.w, tileRect.x + tileRect.w) - Math.max(entityBounds.x, tileRect.x);
+            const overlapY = Math.min(entityBounds.y + entityBounds.h, tileRect.y + tileRect.h) - Math.max(entityBounds.y, tileRect.y);
             
-            // Calculate penetration and normal
-            if (velocity.y > 0) {
-              // Moving down, hit top side of tile
-              penetration = (entityBounds.y + entityBounds.h) - tileRect.y;
-              normal = { x: 0, y: -1 };
-            } else {
-              // Moving up, hit bottom side of tile
-              penetration = (tileRect.y + tileRect.h) - entityBounds.y;
-              normal = { x: 0, y: 1 };
+            // Only treat as Y-axis collision if Y overlap is significantly less than X overlap
+            // This prevents side walls from being treated as floors/ceilings
+            if (overlapY < overlapX - 1) {
+              collided = true;
+              
+              // Calculate penetration and normal
+              if (velocity.y > 0) {
+                // Moving down, hit top side of tile
+                penetration = (entityBounds.y + entityBounds.h) - tileRect.y;
+                normal = { x: 0, y: -1 };
+              } else {
+                // Moving up, hit bottom side of tile
+                penetration = (tileRect.y + tileRect.h) - entityBounds.y;
+                normal = { x: 0, y: 1 };
+              }
+              
+              return { collided, normal, penetration };
             }
-            
-            return { collided, normal, penetration };
           }
         }
       }

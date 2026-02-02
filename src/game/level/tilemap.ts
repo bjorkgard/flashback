@@ -14,6 +14,7 @@ export class Tilemap {
   private _width: number;
   private _height: number;
   private _tileSize: number;
+  private _bounds: { x: number; y: number; w: number; h: number };
   private tiles: Map<string, Tile>;
   private animatedTiles: Tile[];
   private animationTime: number = 0;
@@ -31,6 +32,7 @@ export class Tilemap {
     this._width = levelData.width;
     this._height = levelData.height;
     this._tileSize = levelData.tileSize;
+    this._bounds = levelData.bounds;
     
     // Set public properties
     this.width = levelData.width;
@@ -99,6 +101,14 @@ export class Tilemap {
    */
   getTileSize(): number {
     return this._tileSize;
+  }
+
+  /**
+   * Gets the level bounds for camera clamping and player constraints.
+   * @returns Rectangle representing the playable area bounds
+   */
+  getBounds(): { x: number; y: number; w: number; h: number } {
+    return this._bounds;
   }
 
   /**
