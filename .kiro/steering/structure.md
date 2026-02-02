@@ -10,14 +10,19 @@ flashback/
 │   ├── App.css            # Component styles
 │   ├── index.css          # Global styles (includes Tailwind)
 │   ├── game/              # Game engine and logic
-│   │   ├── engine/        # Core systems (loop, input, time) - TODO
-│   │   ├── math/          # Math utilities (vec2, rect) ✅ JSDoc ✅
+│   │   ├── engine/        # Core systems (loop ✅, input ✅, time ✅) JSDoc ✅
+│   │   ├── math/          # Math utilities (vec2 ✅, rect ✅) JSDoc ✅
 │   │   ├── render/        # Rendering (sprites ✅, palette ✅, camera ✅, renderer ✅) JSDoc ✅
 │   │   ├── entities/      # Game entities (player ✅, enemies ✅, projectiles ✅) JSDoc ✅
 │   │   └── level/         # Level data (tilemap ✅, collision ✅, raycast ✅) JSDoc ✅
-│   ├── ui/                # React UI components (menus, overlays) - TODO
+│   ├── ui/                # React UI components (menus ✅, overlays ✅) JSDoc ✅
 │   ├── test/              # Test setup and utilities ✅
 │   └── assets/            # Static assets (minimal - most art is procedural)
+├── docs/                  # Documentation
+│   ├── API.md            # Complete API reference
+│   ├── ARCHITECTURE.md   # Project structure and patterns
+│   ├── DEVELOPMENT.md    # Development guide
+│   └── TESTING.md        # Testing guide
 ├── public/                # Public static files
 ├── .kiro/                 # Kiro configuration
 │   ├── specs/             # Feature specifications
@@ -122,17 +127,14 @@ flashback/
 - Property-based tests for collision
 - Full JSDoc documentation
 
-#### Entity System (✅ Complete, refinement in progress)
+#### Entity System (✅ Complete)
 - `entity.ts`: Base entity interface
 - `player.ts`: Player with state machine and physics
 - `enemy.ts`: Enemy AI with patrol, alert, shoot states
 - `projectile.ts`: Projectile with velocity-based movement
 - Property-based tests for entity behavior
 - Full JSDoc documentation
-- **Note**: 11 tests failing, being refined in upcoming tasks
 
 ### Next Steps
-- Game loop (fixed 60Hz timestep with accumulator)
-- Input system (keyboard state tracking)
-- UI components (menus, overlays)
-- Integration and polish
+- Additional levels and content
+- Polish and refinement

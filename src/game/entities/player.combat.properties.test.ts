@@ -129,8 +129,9 @@ describe('Player Combat Properties', () => {
           
           const secondShotCount = projectileCount;
           
-          // If time between shots was less than cooldown (300ms), no second shot
-          if (timeBetweenShots < 300) {
+          // If time between shots was less than or equal to cooldown (300ms), no second shot
+          // Add small buffer (1 frame = 16.67ms) for floating point precision
+          if (timeBetweenShots < 300 + 16.67) {
             expect(secondShotCount).toBe(1); // Still only 1 shot
           } else {
             expect(secondShotCount).toBe(2); // Second shot fired

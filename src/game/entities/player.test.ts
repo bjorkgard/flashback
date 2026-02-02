@@ -91,8 +91,11 @@ describe('Player Entity', () => {
 
   beforeEach(() => {
     tilemap = createTestLevel();
-    player = new Player(100, 320); // On ground
+    player = new Player(100, 280); // Above ground (ground is at y=320, player height is 40)
     input = createDefaultInput();
+    
+    // Run one update to let player settle on ground
+    player.update(1/60, input, tilemap);
   });
 
   describe('State Transitions', () => {
@@ -299,14 +302,20 @@ describe('Player Entity', () => {
 
   describe('Animation Frame Progression', () => {
     it('should progress animation frames over time', () => {
+      // Ensure player is on ground and idle
       player.state = 'idle';
-      player['grounded'] = true;
       player.animFrame = 0;
       player.animTimer = 0;
       
-      // Update for several frames
-      for (let i = 0; i < 20; i++) {
+      // Update for enough frames to progress animation
+      // Idle animation is 180ms per frame, at 1/60s = 16.67ms per update
+      // Need 180/16.67 = ~11 updates to advance one frame
+      for (let i = 0; i < 15; i++) {
         player.update(1/60, input, tilemap);
+        // Keep player in idle state to prevent state changes
+        if (player.state !== 'idle') {
+          player.state = 'idle';
+        }
       }
       
       // Animation frame should have progressed

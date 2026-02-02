@@ -199,20 +199,22 @@ export class Player implements Entity {
   
   /**
    * Handle state-specific behavior
+   * @param input - Current input state
+   * @param tilemap - Level tilemap for collision checks
    */
   private handleState(_dt: number, input: InputState, tilemap: Tilemap): void {
     switch (this.state) {
       case 'idle':
-        this.handleIdle(input, tilemap);
+        this.handleIdle(input);
         break;
       case 'walk':
-        this.handleWalk(input, tilemap);
+        this.handleWalk(input);
         break;
       case 'run':
-        this.handleRun(input, tilemap);
+        this.handleRun(input);
         break;
       case 'jump':
-        this.handleJump(input, tilemap);
+        this.handleJump(input);
         break;
       case 'fall':
         this.handleFall(input, tilemap);
@@ -221,13 +223,13 @@ export class Player implements Entity {
         this.handleLandRecover(input);
         break;
       case 'roll':
-        this.handleRoll(input);
+        this.handleRoll();
         break;
       case 'hang':
-        this.handleHang(input, tilemap);
+        this.handleHang(input);
         break;
       case 'climbUp':
-        this.handleClimbUp(input);
+        this.handleClimbUp();
         break;
       case 'climbDown':
         this.handleClimbDown(input, tilemap);
@@ -236,7 +238,7 @@ export class Player implements Entity {
         this.handleAim(input);
         break;
       case 'shoot':
-        this.handleShoot(input);
+        this.handleShoot();
         break;
       case 'hurt':
         this.handleHurt();
@@ -246,8 +248,9 @@ export class Player implements Entity {
   
   /**
    * Handle idle state
+   * @param input - Current input state
    */
-  private handleIdle(input: InputState, _tilemap: Tilemap): void {
+  private handleIdle(input: InputState): void {
     // Update facing direction based on input
     if (input.left) {
       this.facing = -1;
@@ -288,8 +291,9 @@ export class Player implements Entity {
   
   /**
    * Handle walk state
+   * @param input - Current input state
    */
-  private handleWalk(input: InputState, _tilemap: Tilemap): void {
+  private handleWalk(input: InputState): void {
     if (!this.grounded) {
       this.state = 'fall';
       return;
@@ -320,8 +324,9 @@ export class Player implements Entity {
   
   /**
    * Handle run state
+   * @param input - Current input state
    */
-  private handleRun(input: InputState, _tilemap: Tilemap): void {
+  private handleRun(input: InputState): void {
     if (!this.grounded) {
       this.state = 'fall';
       return;
@@ -352,8 +357,9 @@ export class Player implements Entity {
   
   /**
    * Handle jump state
+   * @param input - Current input state
    */
-  private handleJump(input: InputState, _tilemap: Tilemap): void {
+  private handleJump(input: InputState): void {
     // Transition to fall when moving downward
     if (this.vel.y > 0) {
       this.state = 'fall';
@@ -416,7 +422,7 @@ export class Player implements Entity {
     // (handled by not checking input.jumpPressed)
     
     // Transition to idle when timer expires (if still grounded)
-    if (this.landRecoverTimer <= 0) {
+    if (this.landRecoverTimer <= 0 && this.grounded) {
       this.state = 'idle';
     }
   }
@@ -424,21 +430,22 @@ export class Player implements Entity {
   /**
    * Handle roll state
    */
-  private handleRoll(_input: InputState): void {
+  private handleRoll(): void {
     // Roll is committed - no state changes until complete
     // Move in facing direction
     this.vel.x = this.facing * PHYSICS.RUN_SPEED * 1.2; // Slightly faster than run
     
-    // Transition to idle when timer expires
-    if (this.rollTimer <= 0) {
+    // Transition to idle when timer expires (if still grounded)
+    if (this.rollTimer <= 0 && this.grounded) {
       this.state = 'idle';
     }
   }
   
   /**
    * Handle hang state
+   * @param input - Current input state
    */
-  private handleHang(input: InputState, _tilemap: Tilemap): void {
+  private handleHang(input: InputState): void {
     // No velocity while hanging
     this.vel.x = 0;
     this.vel.y = 0;
@@ -459,7 +466,7 @@ export class Player implements Entity {
   /**
    * Handle climb up state
    */
-  private handleClimbUp(_input: InputState): void {
+  private handleClimbUp(): void {
     // Move upward during climb animation
     this.vel.x = 0;
     this.vel.y = -PHYSICS.CLIMB_SPEED;
@@ -510,7 +517,7 @@ export class Player implements Entity {
   /**
    * Handle shoot state
    */
-  private handleShoot(_input: InputState): void {
+  private handleShoot(): void {
     // Create projectile on first frame (only once per shoot)
     if (this.animFrame === 0 && this.onShoot && !this.projectileFired) {
       // Shoot in facing direction
@@ -538,9 +545,10 @@ export class Player implements Entity {
     if (this.hurtTimer <= 0) {
       if (this.health <= 0) {
         this.state = 'dead';
-      } else {
+      } else if (this.grounded) {
         this.state = 'idle';
       }
+      // If not grounded, will transition to fall in applyPhysics
     }
   }
   

@@ -249,8 +249,38 @@ export class Enemy implements Entity {
       
       // Check if reached waypoint
       if (distanceToWaypoint <= PHYSICS.WAYPOINT_TOLERANCE) {
-        // Move to next waypoint
+        // Move to next waypoint (wrap around)
         this.currentWaypoint = (this.currentWaypoint + 1) % this.patrolWaypoints.length;
+        
+        // Get new target immediately
+        const newTarget = this.patrolWaypoints[this.currentWaypoint];
+        const newToWaypoint = sub(newTarget, this.pos);
+        const newDistance = length(newToWaypoint);
+        
+        if (newDistance > PHYSICS.WAYPOINT_TOLERANCE) {
+          // Move toward new waypoint
+          const direction = newToWaypoint.x > 0 ? 1 : -1;
+          this.facing = direction as -1 | 1;
+          
+          if (this.type === 'humanoid') {
+            // Ground-based movement
+            this.vel.x = direction * PHYSICS.PATROL_SPEED;
+          } else {
+            // Flying movement (drone)
+            const normalizedDir = {
+              x: newToWaypoint.x / newDistance,
+              y: newToWaypoint.y / newDistance
+            };
+            this.vel.x = normalizedDir.x * PHYSICS.PATROL_SPEED;
+            this.vel.y = normalizedDir.y * PHYSICS.PATROL_SPEED;
+          }
+        } else {
+          // Already at new waypoint too
+          this.vel.x = 0;
+          if (this.type === 'drone') {
+            this.vel.y = 0;
+          }
+        }
       } else {
         // Move toward waypoint
         const direction = toWaypoint.x > 0 ? 1 : -1;

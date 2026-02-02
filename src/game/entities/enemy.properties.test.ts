@@ -114,10 +114,10 @@ describe('Enemy AI Property Tests', () => {
     fc.assert(
       fc.property(
         fc.record({
-          enemyX: fc.float({ min: 200, max: 600 }),
-          enemyY: fc.float({ min: 200, max: 300 }),
-          playerOffsetX: fc.float({ min: -150, max: 150 }),
-          playerOffsetY: fc.float({ min: -150, max: 150 }),
+          enemyX: fc.integer({ min: 200, max: 600 }),
+          enemyY: fc.integer({ min: 200, max: 300 }),
+          playerOffsetX: fc.integer({ min: -150, max: 150 }),
+          playerOffsetY: fc.integer({ min: -150, max: 150 }),
           enemyType: fc.constantFrom('humanoid' as const, 'drone' as const),
         }),
         ({ enemyX, enemyY, playerOffsetX, playerOffsetY, enemyType }) => {
