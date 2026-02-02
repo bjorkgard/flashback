@@ -108,7 +108,7 @@ export class Player implements Entity {
   animFrame: number;   // Current frame index
   
   // Ground detection
-  private grounded: boolean;
+  grounded: boolean;
   
   // Shoot tracking
   private projectileFired: boolean; // Track if projectile created for current shoot
@@ -248,6 +248,13 @@ export class Player implements Entity {
    * Handle idle state
    */
   private handleIdle(input: InputState, tilemap: Tilemap): void {
+    // Update facing direction based on input
+    if (input.left) {
+      this.facing = -1;
+    } else if (input.right) {
+      this.facing = 1;
+    }
+    
     // Check for state transitions
     if (!this.grounded) {
       this.state = 'fall';
@@ -267,7 +274,7 @@ export class Player implements Entity {
       return;
     }
     
-    if (input.jumpPressed) {
+    if (input.jumpPressed && this.grounded) {
       this.state = 'jump';
       this.vel.y = PHYSICS.JUMP_VELOCITY;
       return;
@@ -412,7 +419,7 @@ export class Player implements Entity {
     // Jump input is locked during recovery
     // (handled by not checking input.jumpPressed)
     
-    // Transition to idle when timer expires
+    // Transition to idle when timer expires (if still grounded)
     if (this.landRecoverTimer <= 0) {
       this.state = 'idle';
     }

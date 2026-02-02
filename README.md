@@ -1,7 +1,8 @@
 # Flashback
 
-![Tests](https://img.shields.io/badge/tests-102%20passing-brightgreen)
-![Test Files](https://img.shields.io/badge/test%20files-11-blue)
+![Tests](https://img.shields.io/badge/tests-155%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-11%20failing-red)
+![Test Files](https://img.shields.io/badge/test%20files-17-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-purple)
@@ -20,17 +21,17 @@ A 2D pixel-art cinematic platformer game built with React, TypeScript, and Vite.
 ## Current Status
 
 ✅ **Completed**
-- Math utilities (Vec2, Rect) with comprehensive unit tests
-- Seeded RNG (mulberry32) with string-to-seed hashing
+- Math utilities (Vec2, Rect) with comprehensive unit tests and JSDoc
+- Seeded RNG (mulberry32) with string-to-seed hashing and JSDoc
 - Palette generation with deterministic color ramps and originality constraints
-- Sprite generation pipeline with 8-step procedural art system
-- Rendering system (Camera, Renderer) with aspect ratio preservation
-- Level system (Tilemap, collision detection, raycasting)
-- Property-based tests for palette, sprites, camera, renderer, and collision
+- Sprite generation pipeline with 8-step procedural art system and complete JSDoc
+- Rendering system (Camera, Renderer) with aspect ratio preservation and JSDoc
+- Level system (Tilemap, collision detection, raycasting) with complete JSDoc
+- Entity system (Player, Enemy, Projectile) with state machines and JSDoc
+- Property-based tests for palette, sprites, camera, renderer, collision, and entities
 
 🚧 **In Development**
-- Entity system (player, enemies, projectiles)
-- Physics and movement mechanics
+- Entity physics refinement (11 failing tests in player/enemy state transitions)
 - Game loop and input handling
 - UI components and integration
 
@@ -88,13 +89,13 @@ flashback/
 │   ├── main.tsx              # Application entry point
 │   ├── App.tsx               # Root component with game integration
 │   ├── game/                 # Game engine and logic
-│   │   ├── engine/           # Core systems (loop, input, time)
-│   │   ├── math/             # Math utilities (vec2, rect) ✅
-│   │   ├── render/           # Rendering (sprites ✅, palette ✅, camera, renderer)
-│   │   ├── entities/         # Game entities (player, enemies, projectiles)
-│   │   └── level/            # Level data (tilemap, collision, raycast)
-│   ├── ui/                   # React UI components (menus, overlays)
-│   └── test/                 # Test setup and utilities
+│   │   ├── engine/           # Core systems (loop, input, time) - TODO
+│   │   ├── math/             # Math utilities (vec2, rect) ✅ JSDoc ✅
+│   │   ├── render/           # Rendering (sprites ✅, palette ✅, camera ✅, renderer ✅) JSDoc ✅
+│   │   ├── entities/         # Game entities (player ✅, enemies ✅, projectiles ✅) JSDoc ✅
+│   │   └── level/            # Level data (tilemap ✅, collision ✅, raycast ✅) JSDoc ✅
+│   ├── ui/                   # React UI components (menus, overlays) - TODO
+│   └── test/                 # Test setup and utilities ✅
 ├── .kiro/                    # Kiro configuration
 │   ├── specs/                # Feature specifications
 │   └── steering/             # Development guidance
@@ -126,10 +127,48 @@ npm test -- --watch
 
 ### Test Coverage
 
-- 102 tests passing across 11 test files
+- **166 total tests** (155 passing, 11 failing)
+- **17 test files** across all modules
 - Comprehensive coverage of math utilities (Vec2, Rect)
-- Property-based tests for RNG determinism, palette generation, sprite generation, camera, renderer, and collision
-- 30 correctness properties defined in design document (17 implemented, 13 in progress)
+- Property-based tests for RNG determinism, palette generation, sprite generation, camera, renderer, collision, and entities
+- **30 correctness properties** defined in design document (28 implemented, 2 in progress)
+- **Known Issues**: 11 failing tests in player/enemy state transitions (being refined)
+
+### Known Test Failures
+
+The following tests are currently failing and being refined:
+
+**Player Entity (5 failures)**
+- State transition from idle to jump (velocity check)
+- State transitions after timers expire (landRecover, roll, hurt → idle)
+- Animation frame progression timing
+
+**Enemy Entity (6 failures)**
+- Waypoint cycling logic (wrap-around and single waypoint)
+- Shoot range boundary conditions (exactly 150px)
+- State transition from hurt to alert
+- Property 25: Line-of-sight detection (property-based test)
+
+These failures are part of the iterative development process and will be addressed in upcoming tasks.
+
+## Documentation
+
+### JSDoc Coverage
+
+All core modules have comprehensive JSDoc documentation:
+
+- ✅ **Math utilities** (`vec2.ts`, `rect.ts`) - Complete function documentation
+- ✅ **Palette generation** (`palette.ts`) - RNG and color generation functions
+- ✅ **Sprite generation** (`sprites.ts`) - 8-step pipeline with detailed comments
+- ✅ **Rendering system** (`camera.ts`, `renderer.ts`) - Class methods and properties
+- ✅ **Level system** (`tilemap.ts`, `collision.ts`, `raycast.ts`, `tileTypes.ts`, `levelTypes.ts`) - Complete API documentation
+- ✅ **Entity system** (`entity.ts`, `player.ts`, `enemy.ts`, `projectile.ts`) - Interfaces and classes
+
+All public APIs include:
+- Function/method descriptions
+- Parameter documentation with types
+- Return value documentation
+- Usage examples where applicable
 
 ## API Documentation
 
@@ -652,6 +691,173 @@ function raycastTiles(
   end: Vec2,
   tilemap: Tilemap
 ): RaycastResult;
+```
+
+### Entity System
+
+#### Entity Interface
+
+Base interface for all game entities.
+
+```typescript
+/**
+ * Base interface for all game entities
+ */
+interface Entity {
+  /** World position */
+  pos: Vec2;
+  
+  /** Velocity vector */
+  vel: Vec2;
+  
+  /** Bounding box for collision */
+  bounds: Rect;
+  
+  /** Whether entity is active */
+  active: boolean;
+  
+  /** Update entity logic */
+  update(dt: number, input: InputState, tilemap: Tilemap, entities: Entity[]): void;
+  
+  /** Render entity */
+  render(ctx: CanvasRenderingContext2D, camera: Camera): void;
+}
+```
+
+#### Player
+
+Player entity with physics-based movement and state machine.
+
+```typescript
+/**
+ * Player entity with complete movement and combat system
+ * @param x - Starting X position
+ * @param y - Starting Y position
+ * @param seed - Seed for procedural sprite generation
+ */
+class Player implements Entity {
+  /** Player state machine */
+  state: PlayerState; // 'idle' | 'walk' | 'run' | 'jump' | 'fall' | 'landRecover' | 'roll' | 'hang' | 'climbUp' | 'aim' | 'shoot' | 'hurt' | 'dead'
+  
+  /** Health points */
+  health: number;
+  
+  /** Facing direction (-1 = left, 1 = right) */
+  facing: number;
+  
+  /** Update player logic */
+  update(dt: number, input: InputState, tilemap: Tilemap, entities: Entity[]): void;
+  
+  /** Take damage */
+  takeDamage(amount: number): void;
+  
+  /** Shoot projectile */
+  shoot(): Projectile | null;
+}
+
+/**
+ * Player state types
+ */
+type PlayerState = 
+  | 'idle' | 'walk' | 'run' 
+  | 'jump' | 'fall' 
+  | 'landRecover' | 'roll' 
+  | 'hang' | 'climbUp' 
+  | 'aim' | 'shoot' 
+  | 'hurt' | 'dead';
+
+/**
+ * Input state for player control
+ */
+interface InputState {
+  left: boolean;
+  right: boolean;
+  up: boolean;
+  down: boolean;
+  jump: boolean;
+  shoot: boolean;
+  roll: boolean;
+  interact: boolean;
+}
+```
+
+#### Enemy
+
+Enemy entity with AI behavior and combat.
+
+```typescript
+/**
+ * Enemy entity with patrol, alert, and combat AI
+ * @param x - Starting X position
+ * @param y - Starting Y position
+ * @param type - Enemy type ('humanoid' | 'drone')
+ * @param waypoints - Patrol waypoints
+ * @param seed - Seed for procedural sprite generation
+ */
+class Enemy implements Entity {
+  /** Enemy type */
+  type: EnemyType; // 'humanoid' | 'drone'
+  
+  /** AI state machine */
+  state: EnemyState; // 'patrol' | 'alert' | 'shoot' | 'hurt' | 'dead'
+  
+  /** Health points */
+  health: number;
+  
+  /** Patrol waypoints */
+  waypoints: Vec2[];
+  
+  /** Update enemy AI and physics */
+  update(dt: number, input: InputState, tilemap: Tilemap, entities: Entity[]): void;
+  
+  /** Take damage */
+  takeDamage(amount: number): void;
+  
+  /** Check if player is in line of sight */
+  canSeePlayer(player: Player, tilemap: Tilemap): boolean;
+}
+
+/**
+ * Enemy type variants
+ */
+type EnemyType = 'humanoid' | 'drone';
+
+/**
+ * Enemy state types
+ */
+type EnemyState = 'patrol' | 'alert' | 'shoot' | 'hurt' | 'dead';
+```
+
+#### Projectile
+
+Projectile entity for bullets and energy shots.
+
+```typescript
+/**
+ * Projectile entity with velocity-based movement
+ * @param x - Starting X position
+ * @param y - Starting Y position
+ * @param vx - X velocity
+ * @param vy - Y velocity
+ * @param owner - Owner type ('player' | 'enemy')
+ * @param seed - Seed for procedural sprite generation
+ */
+class Projectile implements Entity {
+  /** Owner type for collision filtering */
+  owner: 'player' | 'enemy';
+  
+  /** Lifetime remaining in seconds */
+  lifetime: number;
+  
+  /** Damage amount */
+  damage: number;
+  
+  /** Update projectile physics */
+  update(dt: number, input: InputState, tilemap: Tilemap, entities: Entity[]): void;
+  
+  /** Check collision with entity */
+  checkCollision(entity: Entity): boolean;
+}
 ```
 
 ## Development Approach

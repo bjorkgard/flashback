@@ -10,13 +10,13 @@ flashback/
 │   ├── App.css            # Component styles
 │   ├── index.css          # Global styles (includes Tailwind)
 │   ├── game/              # Game engine and logic
-│   │   ├── engine/        # Core systems (loop, input, time)
-│   │   ├── math/          # Math utilities (vec2, rect) ✅
-│   │   ├── render/        # Rendering (sprites, palette, camera, renderer)
-│   │   ├── entities/      # Game entities (player, enemies, projectiles)
-│   │   └── level/         # Level data (tilemap, collision, raycast)
-│   ├── ui/                # React UI components (menus, overlays)
-│   ├── test/              # Test setup and utilities
+│   │   ├── engine/        # Core systems (loop, input, time) - TODO
+│   │   ├── math/          # Math utilities (vec2, rect) ✅ JSDoc ✅
+│   │   ├── render/        # Rendering (sprites ✅, palette ✅, camera ✅, renderer ✅) JSDoc ✅
+│   │   ├── entities/      # Game entities (player ✅, enemies ✅, projectiles ✅) JSDoc ✅
+│   │   └── level/         # Level data (tilemap ✅, collision ✅, raycast ✅) JSDoc ✅
+│   ├── ui/                # React UI components (menus, overlays) - TODO
+│   ├── test/              # Test setup and utilities ✅
 │   └── assets/            # Static assets (minimal - most art is procedural)
 ├── public/                # Public static files
 ├── .kiro/                 # Kiro configuration
@@ -98,9 +98,41 @@ flashback/
 - Property-based tests for determinism and structure
 - Full JSDoc documentation
 
+#### Sprite Generation (✅ Complete)
+- `sprites.ts`: 8-step procedural art pipeline
+- Silhouette generation, region partitioning, lighting, dithering
+- Outline, rim light, and micro-detail passes
+- Animation frame generation for all entity types
+- Sprite caching for performance
+- Property-based tests for determinism and completeness
+- Full JSDoc documentation
+
+#### Rendering System (✅ Complete)
+- `camera.ts`: Smooth follow with lerp and look-ahead
+- `renderer.ts`: Pixel-perfect rendering with offscreen buffer
+- Aspect ratio preservation with letterboxing/pillarboxing
+- Property-based tests for camera and renderer
+- Full JSDoc documentation
+
+#### Level System (✅ Complete)
+- `tilemap.ts`: Level loading and tile access
+- `collision.ts`: Axis-by-axis AABB collision detection
+- `raycast.ts`: DDA raycasting for line-of-sight
+- `tileTypes.ts`, `levelTypes.ts`: Type definitions
+- Property-based tests for collision
+- Full JSDoc documentation
+
+#### Entity System (✅ Complete, refinement in progress)
+- `entity.ts`: Base entity interface
+- `player.ts`: Player with state machine and physics
+- `enemy.ts`: Enemy AI with patrol, alert, shoot states
+- `projectile.ts`: Projectile with velocity-based movement
+- Property-based tests for entity behavior
+- Full JSDoc documentation
+- **Note**: 11 tests failing, being refined in upcoming tasks
+
 ### Next Steps
-- Sprite generation pipeline (8-step procedural art)
-- Rendering system (canvas, camera, aspect ratio preservation)
-- Entity system (player, enemies, projectiles)
-- Collision detection (axis-by-axis AABB)
 - Game loop (fixed 60Hz timestep with accumulator)
+- Input system (keyboard state tracking)
+- UI components (menus, overlays)
+- Integration and polish

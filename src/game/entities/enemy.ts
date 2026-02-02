@@ -106,6 +106,9 @@ export class Enemy implements Entity {
   // Target tracking
   private targetPos: Vec2 | null;
   
+  // Shoot tracking
+  private projectileFired: boolean; // Track if projectile created for current shoot
+  
   // Projectile creation callback
   private onShoot?: (pos: Vec2, direction: Vec2) => void;
   
@@ -156,6 +159,7 @@ export class Enemy implements Entity {
     
     this.grounded = false;
     this.targetPos = null;
+    this.projectileFired = false;
   }
   
   /**
@@ -237,7 +241,8 @@ export class Enemy implements Entity {
     }
     
     // Follow patrol waypoints
-    if (this.patrolWaypoints.length > 0) {
+    if (this.patrolWaypoints.length > 1) {
+      // Multiple waypoints - patrol between them
       const targetWaypoint = this.patrolWaypoints[this.currentWaypoint];
       const toWaypoint = sub(targetWaypoint, this.pos);
       const distanceToWaypoint = length(toWaypoint);
@@ -264,6 +269,12 @@ export class Enemy implements Entity {
           this.vel.y = normalizedDir.y * PHYSICS.PATROL_SPEED;
         }
       }
+    } else {
+      // Single waypoint or no waypoints - stay in place
+      this.vel.x = 0;
+      if (this.type === 'drone') {
+        this.vel.y = 0;
+      }
     }
   }
   
@@ -285,6 +296,8 @@ export class Enemy implements Entity {
       // Transition to shoot state
       this.state = 'shoot';
       this.shootCooldown = PHYSICS.SHOOT_COOLDOWN;
+      this.animFrame = 0; // Reset animation for shoot
+      this.projectileFired = false; // Reset projectile flag
       return;
     }
     
@@ -337,8 +350,8 @@ export class Enemy implements Entity {
     const toPlayer = sub(playerPos, this.pos);
     this.facing = toPlayer.x > 0 ? 1 : -1;
     
-    // Fire projectile on first frame
-    if (this.animFrame === 0 && this.onShoot) {
+    // Fire projectile on first frame (only once per shoot)
+    if (this.animFrame === 0 && this.onShoot && !this.projectileFired) {
       // Calculate shoot position
       const shootPos = vec2(
         this.pos.x + (this.facing > 0 ? this.bounds.w : 0),
@@ -352,6 +365,7 @@ export class Enemy implements Entity {
         : vec2(this.facing, 0);
       
       this.onShoot(shootPos, direction);
+      this.projectileFired = true; // Mark as fired
     }
     
     // Transition back to alert after animation completes
@@ -371,7 +385,8 @@ export class Enemy implements Entity {
         this.state = 'dead';
         this.active = false; // Mark for removal
       } else {
-        this.state = 'alert';
+        // Return to alert if we had a target, otherwise patrol
+        this.state = this.targetPos ? 'alert' : 'patrol';
       }
     }
   }

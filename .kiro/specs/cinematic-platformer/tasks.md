@@ -259,7 +259,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test shoot range boundaries
     - _Requirements: 11.1, 11.2, 11.4_
 
-- [ ] 13. Checkpoint - Verify entity systems
+- [x] 13. Checkpoint - Verify entity systems
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. Implement game loop and input

@@ -3,10 +3,14 @@
 **Flashback** is a 2D pixel-art cinematic platformer game built with React, TypeScript, and Vite. The game features procedurally generated art, weighty deliberate movement mechanics inspired by early 90s cinematic sci-fi platformers, and a complete rendering pipeline with deterministic seeded generation.
 
 ## Current State
-- ✅ Math utilities (Vec2, Rect) with comprehensive tests
-- ✅ RNG and palette generation with property-based tests
-- 🚧 In development: Sprite generation pipeline
-- 🚧 Planned: Entity system, physics, collision, rendering, game loop
+- ✅ Math utilities (Vec2, Rect) with comprehensive tests and JSDoc
+- ✅ RNG and palette generation with property-based tests and JSDoc
+- ✅ Sprite generation pipeline with 8-step procedural art system and JSDoc
+- ✅ Rendering system (Camera, Renderer) with aspect ratio preservation and JSDoc
+- ✅ Level system (Tilemap, collision, raycasting) with complete JSDoc
+- ✅ Entity system (Player, Enemy, Projectile) with state machines and JSDoc
+- 🚧 In development: Entity physics refinement (11 failing tests)
+- 🚧 Planned: Game loop, input handling, UI components, integration
 
 ## Key Features
 - **Procedural Art**: All sprites, tiles, and palettes generated at runtime from seeds
