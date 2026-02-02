@@ -236,8 +236,8 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Test animation frame progression
     - _Requirements: 8.6, 8.7_
 
-- [ ] 12. Implement enemy entities
-  - [ ] 12.1 Create Enemy entity (src/game/entities/enemy.ts)
+- [x] 12. Implement enemy entities
+  - [x] 12.1 Create Enemy entity (src/game/entities/enemy.ts)
     - Define EnemyType and EnemyState types
     - Implement patrol state with waypoint following
     - Implement alert state with player facing
@@ -246,14 +246,14 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Support humanoid and drone types
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
   
-  - [ ] 12.2 Write property tests for enemy AI
+  - [x] 12.2 Write property tests for enemy AI
     - **Property 24: Patrol Waypoint Following**
     - **Property 25: Line-of-Sight Detection**
     - **Property 26: Alert State Behavior**
     - **Property 27: Enemy Shooting Behavior**
     - **Validates: Requirements 11.1, 11.2, 11.3, 11.4**
   
-  - [ ] 12.3 Write unit tests for enemy
+  - [x] 12.3 Write unit tests for enemy
     - Test waypoint cycling
     - Test detection range boundaries
     - Test shoot range boundaries
