@@ -13,7 +13,7 @@ import { Player } from './player';
 import type { InputState } from './player';
 import { Tilemap } from '../level/tilemap';
 import type { LevelData } from '../level/levelTypes';
-import { vec2 } from '../math/vec2';
+// import { vec2 } from '../math/vec2';
 
 /**
  * Create a minimal test level with flat ground
@@ -158,14 +158,14 @@ describe('Player Combat Properties', () => {
           initialHealth: fc.integer({ min: 1, max: 5 }),
         }),
         ({ damage, initialHealth }) => {
-          const tilemap = createTestLevel();
+          // const tilemap = createTestLevel();
           const player = new Player(100, 320);
           player.health = initialHealth;
           player.maxHealth = 5;
           player.state = 'idle';
           player['grounded'] = true;
           
-          const input = createDefaultInput();
+          // const input = createDefaultInput();
           
           // Apply damage
           player.takeDamage(damage);
@@ -213,7 +213,7 @@ describe('Player Combat Properties', () => {
           rollProgress: fc.float({ min: 0, max: 1 }),
         }),
         ({ rollProgress }) => {
-          const tilemap = createTestLevel();
+          // const tilemap = createTestLevel();
           const player = new Player(100, 320);
           player.state = 'roll';
           player['grounded'] = true;
@@ -226,8 +226,8 @@ describe('Player Combat Properties', () => {
           const IFRAME_DURATION = 280; // 70% of 400
           player['rollTimer'] = ROLL_DURATION * (1 - rollProgress);
           
-          const input = createDefaultInput();
-          player.update(1/60, input, tilemap);
+          // const input = createDefaultInput();
+          player.update(1/60);
           
           // Simulate projectile hit
           const timeIntoRoll = ROLL_DURATION * rollProgress;

@@ -30,7 +30,7 @@ describe('Renderer Property-Based Tests', () => {
             clearRect: () => {},
             drawImage: () => {},
             putImageData: () => {},
-            getImageData: (x: number, y: number, w: number, h: number) => ({
+            getImageData: (_x: number, _y: number, w: number, h: number) => ({
               width: w,
               height: h,
               data: new Uint8ClampedArray(w * h * 4),

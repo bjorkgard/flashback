@@ -263,7 +263,7 @@ export function generateFrame(
  */
 export function generateSilhouette(
   _animName: string,
-  frameIndex: number,
+  _frameIndex: number,
   width: number,
   height: number,
   rng: () => number

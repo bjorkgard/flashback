@@ -11,7 +11,7 @@
 
 import { Camera } from './camera';
 import { generatePalette, type Palette } from './palette';
-import { getSprite, type AnimationSet } from './sprites';
+import { getSprite } from './sprites';
 
 /**
  * Configuration for the renderer
@@ -283,7 +283,7 @@ export class Renderer {
     const spacing = 1;
 
     // Convert hex to RGB
-    const rgb = this.hexToRgb(color);
+    // const rgb = this.hexToRgb(color);
     this.offscreenCtx.fillStyle = color;
 
     for (let i = 0; i < text.length; i++) {
@@ -317,14 +317,14 @@ export class Renderer {
    * @param hex - Hex color string
    * @returns RGB object
    */
-  private hexToRgb(hex: string): { r: number; g: number; b: number } {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : { r: 0, g: 0, b: 0 };
-  }
+  // private hexToRgb(hex: string): { r: number; g: number; b: number } {
+  //   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  //   return result ? {
+  //     r: parseInt(result[1], 16),
+  //     g: parseInt(result[2], 16),
+  //     b: parseInt(result[3], 16)
+  //   } : { r: 0, g: 0, b: 0 };
+  // }
 
   /**
    * Scale internal buffer to display canvas with aspect ratio preservation
@@ -332,7 +332,7 @@ export class Renderer {
   private scaleToDisplay(): void {
     const displayW = this.displayCanvas.width;
     const displayH = this.displayCanvas.height;
-    const aspectRatio = this.internalWidth / this.internalHeight; // 16:9
+    // const aspectRatio = this.internalWidth / this.internalHeight; // 16:9
 
     // Calculate scale to fit while preserving aspect ratio
     let scale = Math.min(displayW / this.internalWidth, displayH / this.internalHeight);

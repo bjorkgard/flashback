@@ -130,28 +130,34 @@ export class GameLoop {
   private loop(currentTime: number): void {
     if (!this.running) return;
     
-    // Update time system
-    const deltaTime = this.state.time.update(currentTime);
-    
-    // Add to accumulator
-    this.state.time.accumulator += deltaTime;
-    
-    // Cap accumulator to prevent spiral of death
-    const maxAccumulator = this.state.time.fixedDt * 5;
-    if (this.state.time.accumulator > maxAccumulator) {
-      this.state.time.accumulator = maxAccumulator;
+    try {
+      // Update time system
+      const deltaTime = this.state.time.update(currentTime);
+      
+      // Add to accumulator
+      this.state.time.accumulator += deltaTime;
+      
+      // Cap accumulator to prevent spiral of death
+      const maxAccumulator = this.state.time.fixedDt * 5;
+      if (this.state.time.accumulator > maxAccumulator) {
+        console.warn('Game loop: Accumulator capped to prevent spiral of death');
+        this.state.time.accumulator = maxAccumulator;
+      }
+      
+      // Fixed timestep updates
+      while (this.state.time.accumulator >= this.state.time.fixedDt) {
+        this.fixedUpdate(this.state.time.getFixedDtSeconds());
+        this.state.time.incrementFrame();
+        this.state.time.accumulator -= this.state.time.fixedDt;
+      }
+      
+      // Render with interpolation alpha
+      const alpha = this.state.time.accumulator / this.state.time.fixedDt;
+      this.render(alpha);
+    } catch (error) {
+      console.error('Game loop error:', error);
+      // Continue running despite error
     }
-    
-    // Fixed timestep updates
-    while (this.state.time.accumulator >= this.state.time.fixedDt) {
-      this.fixedUpdate(this.state.time.getFixedDtSeconds());
-      this.state.time.incrementFrame();
-      this.state.time.accumulator -= this.state.time.fixedDt;
-    }
-    
-    // Render with interpolation alpha
-    const alpha = this.state.time.accumulator / this.state.time.fixedDt;
-    this.render(alpha);
     
     // Continue loop
     this.animationFrameId = requestAnimationFrame(this.loop.bind(this));
@@ -165,56 +171,61 @@ export class GameLoop {
     // Only update during playing state
     if (this.state.mode !== 'playing') return;
     
-    // Sample input deterministically
-    this.state.input.update();
-    
-    // Build input state for player
-    const inputState: InputState = {
-      left: this.state.input.isDown('KeyA') || this.state.input.isDown('ArrowLeft'),
-      right: this.state.input.isDown('KeyD') || this.state.input.isDown('ArrowRight'),
-      up: this.state.input.isDown('KeyW') || this.state.input.isDown('ArrowUp'),
-      down: this.state.input.isDown('KeyS') || this.state.input.isDown('ArrowDown'),
-      jump: this.state.input.isDown('Space'),
-      shoot: this.state.input.isDown('KeyE'),
-      roll: this.state.input.isDown('ShiftLeft') || this.state.input.isDown('ShiftRight'),
-      jumpPressed: this.state.input.wasPressed('Space'),
-      shootPressed: this.state.input.wasPressed('KeyE'),
-      rollPressed: this.state.input.wasPressed('ShiftLeft') || this.state.input.wasPressed('ShiftRight'),
-      upPressed: this.state.input.wasPressed('KeyW') || this.state.input.wasPressed('ArrowUp'),
-    };
-    
-    // Update player
-    this.state.player.update(dt, inputState, this.state.level);
-    
-    // Update enemies
-    for (const enemy of this.state.enemies) {
-      enemy.update(dt, this.state.player.pos, this.state.level);
+    try {
+      // Sample input deterministically
+      this.state.input.update();
+      
+      // Build input state for player
+      const inputState: InputState = {
+        left: this.state.input.isDown('KeyA') || this.state.input.isDown('ArrowLeft'),
+        right: this.state.input.isDown('KeyD') || this.state.input.isDown('ArrowRight'),
+        up: this.state.input.isDown('KeyW') || this.state.input.isDown('ArrowUp'),
+        down: this.state.input.isDown('KeyS') || this.state.input.isDown('ArrowDown'),
+        jump: this.state.input.isDown('Space'),
+        shoot: this.state.input.isDown('KeyE'),
+        roll: this.state.input.isDown('ShiftLeft') || this.state.input.isDown('ShiftRight'),
+        jumpPressed: this.state.input.wasPressed('Space'),
+        shootPressed: this.state.input.wasPressed('KeyE'),
+        rollPressed: this.state.input.wasPressed('ShiftLeft') || this.state.input.wasPressed('ShiftRight'),
+        upPressed: this.state.input.wasPressed('KeyW') || this.state.input.wasPressed('ArrowUp'),
+      };
+      
+      // Update player
+      this.state.player.update(dt, inputState, this.state.level);
+      
+      // Update enemies
+      for (const enemy of this.state.enemies) {
+        enemy.update(dt, this.state.player.pos, this.state.level);
+      }
+      
+      // Update projectiles
+      for (const projectile of this.state.projectiles) {
+        projectile.update(dt);
+      }
+      
+      // Remove inactive projectiles
+      this.state.projectiles = this.state.projectiles.filter(p => p.active);
+      
+      // Remove inactive enemies
+      this.state.enemies = this.state.enemies.filter(e => e.active);
+      
+      // Check collisions
+      this.checkCollisions();
+      
+      // Update camera
+      this.state.camera.setTarget(this.state.player.pos);
+      this.state.camera.setTargetVelocity(this.state.player.vel);
+      this.state.camera.update(dt);
+      
+      // Update tilemap animations
+      this.state.level.update(dt);
+      
+      // Check win/lose conditions
+      this.checkGameConditions();
+    } catch (error) {
+      console.error('Fixed update error:', error);
+      // Continue despite error
     }
-    
-    // Update projectiles
-    for (const projectile of this.state.projectiles) {
-      projectile.update(dt);
-    }
-    
-    // Remove inactive projectiles
-    this.state.projectiles = this.state.projectiles.filter(p => p.active);
-    
-    // Remove inactive enemies
-    this.state.enemies = this.state.enemies.filter(e => e.active);
-    
-    // Check collisions
-    this.checkCollisions();
-    
-    // Update camera
-    this.state.camera.setTarget(this.state.player.pos);
-    this.state.camera.setTargetVelocity(this.state.player.vel);
-    this.state.camera.update(dt);
-    
-    // Update tilemap animations
-    this.state.level.update(dt);
-    
-    // Check win/lose conditions
-    this.checkGameConditions();
   }
   
   /**

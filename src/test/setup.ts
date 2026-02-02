@@ -32,7 +32,7 @@ if (typeof OffscreenCanvas === 'undefined') {
           clearRect: () => {},
           drawImage: () => {},
           putImageData: () => {},
-          getImageData: (x: number, y: number, w: number, h: number) => ({
+          getImageData: (_x: number, _y: number, w: number, h: number) => ({
             width: w,
             height: h,
             data: new Uint8ClampedArray(w * h * 4),
@@ -75,7 +75,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
   const originalGetContext = HTMLCanvasElement.prototype.getContext;
   
   if (!originalGetContext || originalGetContext.toString().includes('Not implemented')) {
-    HTMLCanvasElement.prototype.getContext = function(contextId: string, options?: any): any {
+    HTMLCanvasElement.prototype.getContext = function(contextId: string, _options?: any): any {
       if (contextId === '2d') {
         // Create a mock 2D context
         return {
@@ -88,7 +88,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
           clearRect: () => {},
           drawImage: () => {},
           putImageData: () => {},
-          getImageData: (x: number, y: number, w: number, h: number) => {
+          getImageData: (_x: number, _y: number, w: number, h: number) => {
             return {
               width: w,
               height: h,

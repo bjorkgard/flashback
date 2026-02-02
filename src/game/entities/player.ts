@@ -200,7 +200,7 @@ export class Player implements Entity {
   /**
    * Handle state-specific behavior
    */
-  private handleState(dt: number, input: InputState, tilemap: Tilemap): void {
+  private handleState(_dt: number, input: InputState, tilemap: Tilemap): void {
     switch (this.state) {
       case 'idle':
         this.handleIdle(input, tilemap);
@@ -247,7 +247,7 @@ export class Player implements Entity {
   /**
    * Handle idle state
    */
-  private handleIdle(input: InputState, tilemap: Tilemap): void {
+  private handleIdle(input: InputState, _tilemap: Tilemap): void {
     // Update facing direction based on input
     if (input.left) {
       this.facing = -1;
@@ -289,7 +289,7 @@ export class Player implements Entity {
   /**
    * Handle walk state
    */
-  private handleWalk(input: InputState, tilemap: Tilemap): void {
+  private handleWalk(input: InputState, _tilemap: Tilemap): void {
     if (!this.grounded) {
       this.state = 'fall';
       return;
@@ -309,10 +309,8 @@ export class Player implements Entity {
       return;
     }
     
-    // Update facing direction
-    if (moveDir !== 0) {
-      this.facing = moveDir as -1 | 1;
-    }
+    // Update facing direction (moveDir is guaranteed to be -1 or 1 here)
+    this.facing = moveDir as -1 | 1;
     
     // Apply movement with turn-in deceleration
     const targetSpeed = PHYSICS.WALK_SPEED * moveDir;
@@ -323,7 +321,7 @@ export class Player implements Entity {
   /**
    * Handle run state
    */
-  private handleRun(input: InputState, tilemap: Tilemap): void {
+  private handleRun(input: InputState, _tilemap: Tilemap): void {
     if (!this.grounded) {
       this.state = 'fall';
       return;
@@ -343,10 +341,8 @@ export class Player implements Entity {
       return;
     }
     
-    // Update facing direction
-    if (moveDir !== 0) {
-      this.facing = moveDir as -1 | 1;
-    }
+    // Update facing direction (moveDir is guaranteed to be -1 or 1 here)
+    this.facing = moveDir as -1 | 1;
     
     // Apply movement with turn-in deceleration
     const targetSpeed = PHYSICS.RUN_SPEED * moveDir;
@@ -357,7 +353,7 @@ export class Player implements Entity {
   /**
    * Handle jump state
    */
-  private handleJump(input: InputState, tilemap: Tilemap): void {
+  private handleJump(input: InputState, _tilemap: Tilemap): void {
     // Transition to fall when moving downward
     if (this.vel.y > 0) {
       this.state = 'fall';
@@ -428,7 +424,7 @@ export class Player implements Entity {
   /**
    * Handle roll state
    */
-  private handleRoll(input: InputState): void {
+  private handleRoll(_input: InputState): void {
     // Roll is committed - no state changes until complete
     // Move in facing direction
     this.vel.x = this.facing * PHYSICS.RUN_SPEED * 1.2; // Slightly faster than run
@@ -442,7 +438,7 @@ export class Player implements Entity {
   /**
    * Handle hang state
    */
-  private handleHang(input: InputState, tilemap: Tilemap): void {
+  private handleHang(input: InputState, _tilemap: Tilemap): void {
     // No velocity while hanging
     this.vel.x = 0;
     this.vel.y = 0;
@@ -463,7 +459,7 @@ export class Player implements Entity {
   /**
    * Handle climb up state
    */
-  private handleClimbUp(input: InputState): void {
+  private handleClimbUp(_input: InputState): void {
     // Move upward during climb animation
     this.vel.x = 0;
     this.vel.y = -PHYSICS.CLIMB_SPEED;
@@ -514,7 +510,7 @@ export class Player implements Entity {
   /**
    * Handle shoot state
    */
-  private handleShoot(input: InputState): void {
+  private handleShoot(_input: InputState): void {
     // Create projectile on first frame (only once per shoot)
     if (this.animFrame === 0 && this.onShoot && !this.projectileFired) {
       // Shoot in facing direction
@@ -562,6 +558,10 @@ export class Player implements Entity {
   private applyPhysics(dt: number, tilemap?: Tilemap): void {
     if (!tilemap) return;
     
+    // Validate and sanitize velocity
+    this.vel = this.sanitizeVector(this.vel);
+    this.pos = this.sanitizeVector(this.pos);
+    
     // Apply gravity
     this.vel.y += PHYSICS.GRAVITY * dt;
     
@@ -601,6 +601,46 @@ export class Player implements Entity {
     // Update position from bounds
     this.pos.x = this.bounds.x;
     this.pos.y = this.bounds.y;
+    
+    // Final validation
+    this.vel = this.sanitizeVector(this.vel);
+    this.pos = this.sanitizeVector(this.pos);
+  }
+  
+  /**
+   * Sanitize a vector to prevent NaN/Infinity
+   */
+  private sanitizeVector(v: Vec2): Vec2 {
+    const MAX_VALUE = 10000;
+    
+    let x = v.x;
+    let y = v.y;
+    
+    // Check for NaN
+    if (isNaN(x)) {
+      console.error('Player: NaN detected in vector.x, resetting to 0');
+      x = 0;
+    }
+    if (isNaN(y)) {
+      console.error('Player: NaN detected in vector.y, resetting to 0');
+      y = 0;
+    }
+    
+    // Check for Infinity
+    if (!isFinite(x)) {
+      console.error('Player: Infinity detected in vector.x, clamping');
+      x = Math.sign(x) * MAX_VALUE;
+    }
+    if (!isFinite(y)) {
+      console.error('Player: Infinity detected in vector.y, clamping');
+      y = Math.sign(y) * MAX_VALUE;
+    }
+    
+    // Clamp to safe bounds
+    x = Math.max(-MAX_VALUE, Math.min(MAX_VALUE, x));
+    y = Math.max(-MAX_VALUE, Math.min(MAX_VALUE, y));
+    
+    return vec2(x, y);
   }
   
   /**

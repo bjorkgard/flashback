@@ -93,7 +93,7 @@ describe('Palette Generation', () => {
     const hexPattern = /^#[0-9a-f]{6}$/;
     
     Object.values(palette).forEach(ramp => {
-      ramp.colors.forEach(color => {
+      ramp.colors.forEach((color: string) => {
         expect(color).toMatch(hexPattern);
       });
     });

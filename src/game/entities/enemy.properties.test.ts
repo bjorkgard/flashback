@@ -10,7 +10,7 @@ import * as fc from 'fast-check';
 import { Enemy } from './enemy';
 import { Tilemap } from '../level/tilemap';
 import { vec2 } from '../math/vec2';
-import type { Vec2 } from '../math/vec2';
+// import type { Vec2 } from '../math/vec2';
 import type { LevelData } from '../level/levelTypes';
 
 /**

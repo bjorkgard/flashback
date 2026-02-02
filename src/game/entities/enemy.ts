@@ -101,7 +101,7 @@ export class Enemy implements Entity {
   animFrame: number;      // Current frame index
   
   // Ground detection (humanoid only)
-  private grounded: boolean;
+  // private grounded: boolean;
   
   // Target tracking
   private targetPos: Vec2 | null;
@@ -157,7 +157,7 @@ export class Enemy implements Entity {
     this.animTimer = 0;
     this.animFrame = 0;
     
-    this.grounded = false;
+    // this.grounded = false;
     this.targetPos = null;
     this.projectileFired = false;
   }
@@ -224,7 +224,7 @@ export class Enemy implements Entity {
   /**
    * Handle patrol state
    */
-  private handlePatrol(dt: number, playerPos: Vec2, tilemap: Tilemap): void {
+  private handlePatrol(_dt: number, playerPos: Vec2, tilemap: Tilemap): void {
     // Check for player detection
     const distanceToPlayer = length(sub(playerPos, this.pos));
     
@@ -281,7 +281,7 @@ export class Enemy implements Entity {
   /**
    * Handle alert state
    */
-  private handleAlert(dt: number, playerPos: Vec2, tilemap: Tilemap): void {
+  private handleAlert(_dt: number, playerPos: Vec2, _tilemap: Tilemap): void {
     // Update target position
     this.targetPos = playerPos;
     
@@ -302,7 +302,7 @@ export class Enemy implements Entity {
     }
     
     // Check if lost line of sight
-    const raycast = raycastTiles(this.pos, playerPos, tilemap);
+    const raycast = raycastTiles(this.pos, playerPos, _tilemap);
     
     if (raycast.hit || distanceToPlayer > this.detectionRange) {
       // Lost sight of player - return to patrol
@@ -339,7 +339,7 @@ export class Enemy implements Entity {
   /**
    * Handle shoot state
    */
-  private handleShoot(dt: number, playerPos: Vec2): void {
+  private handleShoot(_dt: number, playerPos: Vec2): void {
     // Stop moving while shooting
     this.vel.x = 0;
     if (this.type === 'drone') {
@@ -422,12 +422,12 @@ export class Enemy implements Entity {
         this.vel.y = 0;
         
         // Check if landed on ground
-        if (yCollision.normal.y < 0) {
-          this.grounded = true;
-        }
-      } else {
-        this.grounded = false;
-      }
+        // if (yCollision.normal.y < 0) {
+        //   this.grounded = true;
+        // }
+      } // else {
+        // this.grounded = false;
+      // }
     } else {
       // Drone - no Y collision, just update position
       this.bounds.y = newPos.y;

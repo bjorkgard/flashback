@@ -5,7 +5,7 @@
 
 import { describe, test, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { mulberry32, hashStringToSeed, generatePalette, hslToHex } from './palette';
+import { mulberry32, hashStringToSeed, generatePalette } from './palette';
 
 describe('Feature: cinematic-platformer - RNG Properties', () => {
   test('Property 3: Palette Generation Determinism', () => {

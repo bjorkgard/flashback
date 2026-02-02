@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GameLoop, type GameState, type GameMode } from './loop';
+import { GameLoop, type GameState } from './loop';
 import { InputSystem } from './input';
 import { TimeSystem } from './time';
 import { Player } from '../entities/player';
@@ -95,7 +95,7 @@ describe('GameLoop - Unit Tests', () => {
     expect(gameLoop.getMode()).toBe('playing');
     
     // Simulate one frame at 16.67ms (60fps)
-    const startFrame = state.time.getFrameCount();
+    // const startFrame = state.time.getFrameCount();
     
     // Manually trigger fixed update by manipulating time
     state.time.update(0);

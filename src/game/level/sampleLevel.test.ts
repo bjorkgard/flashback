@@ -57,7 +57,7 @@ describe("Sample Level", () => {
 
     it("should contain at least one hazard tile", () => {
       const levelData = loadLevelFromJSON(sampleLevelData);
-      const tilemap = new Tilemap(levelData);
+      // const tilemap = new Tilemap(levelData);
       
       const hazardTiles = levelData.tiles.filter(t => t.type === "hazard");
       

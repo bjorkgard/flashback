@@ -51,7 +51,7 @@ export class Camera {
    * Update camera position with smooth following
    * @param dt - Delta time in seconds (unused but kept for consistency)
    */
-  update(dt: number): void {
+  update(_dt: number): void {
     if (!this.target) return;
 
     // Calculate desired position (center target in viewport)

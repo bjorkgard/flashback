@@ -72,7 +72,7 @@ describe("Collision Properties", () => {
 
           const ledgeLeftEdge = ledgeTileX * tileSize;
           const ledgeRightEdge = (ledgeTileX + 1) * tileSize;
-          const ledgeTopY = ledgeTileY * tileSize;
+          // const ledgeTopY = ledgeTileY * tileSize;
 
           // Check if either hand is inside the ledge tile
           const leftHandTileX = Math.floor(leftHandX / tileSize);
