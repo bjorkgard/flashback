@@ -193,22 +193,22 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - **Property 19: Projectile Creation on Shoot**
     - **Validates: Requirements 10.1**
 
-- [ ] 11. Implement player entity
-  - [ ] 11.1 Create Player entity (src/game/entities/player.ts)
+- [x] 11. Implement player entity
+  - [x] 11.1 Create Player entity (src/game/entities/player.ts)
     - Define PlayerState type and state machine
     - Implement physics constants (walk/run speed, jump velocity, gravity, friction)
     - Implement state: idle, walk, run, jump, fall
     - Implement input handling for movement and jumping
     - _Requirements: 8.1, 8.7, 9.3_
   
-  - [ ] 11.2 Implement player advanced movement
+  - [x] 11.2 Implement player advanced movement
     - Implement landRecover state with duration and constraints
     - Implement roll state with commitment and i-frames
     - Implement hang and climbUp states
     - Implement turn-in deceleration when reversing direction
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
   
-  - [ ] 11.3 Implement player combat
+  - [x] 11.3 Implement player combat
     - Implement aim and shoot states
     - Implement shoot cooldown enforcement
     - Create projectiles on shoot
@@ -216,7 +216,7 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - Implement hurt and dead states
     - _Requirements: 10.1, 10.2, 10.4, 10.5_
   
-  - [ ] 11.4 Write property tests for player physics
+  - [x] 11.4 Write property tests for player physics
     - **Property 12: Turn-In Deceleration**
     - **Property 13: Landing Recovery Duration**
     - **Property 14: Landing Recovery Constraints**
@@ -224,13 +224,13 @@ This implementation plan breaks down the cinematic platformer into incremental c
     - **Property 16: Roll Invulnerability Frames**
     - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5**
   
-  - [ ] 11.5 Write property tests for player combat
+  - [x] 11.5 Write property tests for player combat
     - **Property 20: Shoot Cooldown Enforcement**
     - **Property 22: Hit Effects Application**
     - **Property 23: Roll Evasion Mechanics**
     - **Validates: Requirements 10.2, 10.4, 10.5**
   
-  - [ ] 11.6 Write unit tests for player
+  - [x] 11.6 Write unit tests for player
     - Test state transitions (idle→walk, jump→fall, etc.)
     - Test ledge grab alignment requirements
     - Test animation frame progression
